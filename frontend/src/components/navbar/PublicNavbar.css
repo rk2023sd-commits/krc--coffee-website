@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ===================== */
+/* Coffee Theme Colors */
+/* ===================== */
+:root {
+  --cream: #fdf6ee;
+  --latte: #f3e8dc;
+  --mocha: #6f4e37;
+  --caramel: #c08a5a;
+  --dark-coffee: #4b2e1f;
+}
+
+/* ===================== */
+/* Navbar */
+/* ===================== */
+.navbar {
+  width: 100%;
+  background: var(--cream);
+  padding: 14px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--dark-coffee);
+}
+
+.logo span {
+  color: var(--caramel);
+}
+
+/* ===================== */
+/* Desktop Menu */
+/* ===================== */
+.nav-links {
+  display: flex;
+  gap: 28px;
+}
+
+.nav-links a,
+.dropdown span {
+  text-decoration: none;
+  color: var(--mocha);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  position: relative;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--caramel), var(--mocha));
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: var(--caramel);
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* ===================== */
+/* LOGIN BUTTON (Animated ☕) */
+/* ===================== */
+.login-btn {
+  background: linear-gradient(90deg, var(--caramel), var(--mocha));
+  border: none;
+  padding: 7px 22px;
+  border-radius: 30px;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  animation: coffeePulse 2.5s infinite;
+}
+
+/* Shine effect */
+.login-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  transition: 0.6s;
+}
+
+.login-btn:hover::before {
+  left: 100%;
+}
+
+.login-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 10px 25px rgba(111, 78, 55, 0.35);
+  animation-play-state: paused;
+}
+
+/* Click press */
+.login-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Coffee steam pulse */
+@keyframes coffeePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(192, 138, 90, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(192, 138, 90, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(192, 138, 90, 0);
+  }
+}
+
+/* ===================== */
+/* Hamburger */
+/* ===================== */
+.hamburger {
+  display: none;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--mocha);
+}
+
+/* ===================== */
+/* Desktop Dropdown */
+/* ===================== */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: var(--cream);
+  min-width: 210px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  border-radius: 14px;
+  padding: 10px 0;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition: 0.3s ease;
+  z-index: 999;
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 10px 20px;
+  color: var(--mocha);
+  font-weight: 500;
+}
+
+.dropdown-menu a:hover {
+  background: var(--latte);
+  color: var(--dark-coffee);
+}
+
+/* ===================== */
+/* Mobile Menu */
+/* ===================== */
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 80%;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--cream), var(--latte));
+  transition: right 0.45s ease;
+  z-index: 2000;
+  padding: 22px;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--dark-coffee);
+}
+
+.mobile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-content a,
+.mobile-dropdown span {
+  text-decoration: none;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--mocha);
+  padding: 10px 14px;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.mobile-content a:hover,
+.mobile-dropdown span:hover {
+  background: var(--latte);
+  color: var(--dark-coffee);
+}
+
+/* Mobile Submenu */
+.mobile-submenu {
+  padding-left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0,0,0,0.4);
+  z-index: 1200;
+}
+
+/* ===================== */
+/* Responsive */
+/* ===================== */
+@media (max-width: 768px) {
+  .nav-links,
+  .desktop-icons {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .logo {
+    font-size: 24px;
+  }
+}

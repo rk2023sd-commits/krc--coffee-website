@@ -1,0 +1,30 @@
+.home {
+  text-align: center;
+  padding: 80px 20px;
+  background: #fff3e0;
+}
+
+.home h1 {
+  font-size: 42px;
+  margin-bottom: 15px;
+}
+
+.home p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.home-actions button {
+  margin: 0 10px;
+  padding: 12px 24px;
+  border: none;
+  background: #3e2723;
+  color: white;
+  border-radius: 5px;
+}
+
+.home-actions .outline {
+  background: transparent;
+  border: 2px solid #3e2723;
+  color: #3e2723;
+}
