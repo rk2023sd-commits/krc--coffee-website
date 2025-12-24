@@ -17,6 +17,19 @@ import Register from "../pages/public/Register";
 
 // customer pages
 import CustomerHome from "../pages/customer/Home";
+import NewArrivals from "../pages/customer/NewArrivals";
+import BestSellers from "../pages/customer/BestSellers";
+import Wishlist from "../pages/customer/Wishlist";
+import Cart from "../pages/customer/Cart";
+import MyOrders from "../pages/customer/MyOrders";
+import Notifications from "../pages/customer/Notifications";
+import CustomerOffers from "../pages/customer/Offers";
+import Dashboard from "../pages/customer/profile/Dashboard";
+import Addresses from "../pages/customer/profile/Addresses";
+import Payments from "../pages/customer/profile/Payments";
+import Rewards from "../pages/customer/profile/Rewards";
+import Security from "../pages/customer/profile/Security";
+
 
 // admin pages
 import AdminDashboard from "../pages/admin/Dashboard";
@@ -89,16 +102,29 @@ export default function AppRoutes() {
       />
 
       {/* ================= CUSTOMER ROUTES ================= */}
-      <Route
-        path="/customer/home"
-        element={
-          <ProtectedRoute role="customer">
-            <CustomerLayout>
-              <CustomerHome />
-            </CustomerLayout>
-          </ProtectedRoute>
-        }
-      />
+     {/* CUSTOMER ROUTES */}
+<Route
+  path="/customer"
+  element={
+    <ProtectedRoute role="customer">
+      <CustomerLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route path="home" element={<CustomerHome />} />
+  <Route path="new-arrivals" element={<NewArrivals />} />
+  <Route path="best-sellers" element={<BestSellers />} />
+  <Route path="offers" element={<CustomerOffers />} />
+  <Route path="wishlist" element={<Wishlist />} />
+  <Route path="cart" element={<Cart />} />
+  <Route path="orders" element={<MyOrders />} />
+  <Route path="notifications" element={<Notifications />} />
+  <Route path="profile/dashboard" element={<Dashboard />} />
+  <Route path="profile/addresses" element={<Addresses />} />
+  <Route path="profile/payments" element={<Payments />} />
+  <Route path="profile/rewards" element={<Rewards />} />
+  <Route path="profile/security" element={<Security />} />
+</Route>
 
       {/* ================= ADMIN ROUTES ================= */}
       <Route

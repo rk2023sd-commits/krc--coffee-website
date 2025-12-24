@@ -1,8 +1,8 @@
 export default function Cart() {
   return (
     <div>
-      <h1>🛒 My Cart</h1>
-      <p>Your selected coffee products will appear here.</p>
+      <h1>🛒 Cart</h1>
+      <p>Review items before checkout.</p>
     </div>
   );
 }

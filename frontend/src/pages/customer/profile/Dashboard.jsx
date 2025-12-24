@@ -1,13 +1,8 @@
-import { useAuth } from "../../../context/AuthContext";
-
-export default function ProfileDashboard() {
-  const { user } = useAuth();
-
+export default function Dashboard() {
   return (
     <div>
-      <h1>👤 My Profile</h1>
-      <p>Name: {user?.name}</p>
-      <p>Email: {user?.email}</p>
+      <h1>👤 Profile Dashboard</h1>
+      <p>Manage your account and preferences.</p>
     </div>
   );
 }
