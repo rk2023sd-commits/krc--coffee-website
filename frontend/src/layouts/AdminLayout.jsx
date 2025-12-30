@@ -14,6 +14,23 @@ const AdminLayout = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    // Protection Logic
+    React.useEffect(() => {
+        const token = localStorage.getItem('token');
+        const rawUser = localStorage.getItem('user');
+        let user = null;
+        try {
+            user = rawUser ? JSON.parse(rawUser) : null;
+            if (user && user.data) user = user.data;
+        } catch (e) { }
+
+        if (!token || !user || user.role !== 'admin') {
+            navigate('/login', { replace: true });
+        }
+    }, [navigate]);
+
+
+
     const handleLogout = () => {
         // Direct logout without confirmation to prevent blocking issues
         localStorage.removeItem('token');
@@ -147,6 +164,18 @@ const AdminLayout = () => {
     };
 
     const isActive = (path) => location.pathname === path;
+
+    // Guard: Do not render layout if not authorized
+    // Use the values read in useEffect or re-read here
+    const authToken = localStorage.getItem('token');
+    let authUser = null;
+    try {
+        const r = localStorage.getItem('user');
+        authUser = r ? JSON.parse(r) : null;
+        if (authUser && authUser.data) authUser = authUser.data;
+    } catch (e) { }
+
+    if (!authToken || !authUser || authUser.role !== 'admin') return null;
 
     return (
         <div className="min-h-screen bg-slate-50 flex font-[Inter]">

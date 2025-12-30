@@ -46,6 +46,7 @@ const PublicNavbar = () => {
               </div>
             </div>
 
+            <Link to="/blog" className="text-[#2C1810] hover:text-[#C97E45] font-medium transition-colors">Blog</Link>
             <Link to="/offers" className="text-[#2C1810] hover:text-[#C97E45] font-medium transition-colors">Offers</Link>
 
             {/* Help Dropdown */}

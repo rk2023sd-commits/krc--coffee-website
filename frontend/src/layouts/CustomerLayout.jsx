@@ -12,6 +12,17 @@ const CustomerLayout = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    // Protection Logic
+    const token = localStorage.getItem('token');
+
+    React.useEffect(() => {
+        if (!token) {
+            navigate('/login', { replace: true, state: { from: location } });
+        }
+    }, [token, navigate, location]);
+
+
+
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
@@ -109,6 +120,8 @@ const CustomerLayout = () => {
     ];
 
     const isActive = (path) => location.pathname === path;
+
+    if (!localStorage.getItem('token')) return null;
 
     return (
         <div className="min-h-screen bg-orange-50/30 flex">

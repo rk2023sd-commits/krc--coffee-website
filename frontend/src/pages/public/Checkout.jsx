@@ -249,7 +249,7 @@ const Checkout = () => {
                     <Link to="/customer/orders" className="bg-[#4A2C2A] text-white px-10 py-4 rounded-2xl font-bold shadow-xl">
                         Track Order
                     </Link>
-                    <Link to="/" className="bg-slate-100 text-[#2C1810] px-10 py-4 rounded-2xl font-bold">
+                    <Link to={location.pathname.startsWith('/customer') ? '/customer/home' : '/'} className="bg-slate-100 text-[#2C1810] px-10 py-4 rounded-2xl font-bold">
                         Back to Home
                     </Link>
                 </div>
@@ -260,7 +260,7 @@ const Checkout = () => {
     return (
         <div className="bg-[#FDFBF7] min-h-screen py-12">
             <div className="container mx-auto px-4">
-                <Link to="/cart" className="inline-flex items-center text-slate-500 hover:text-[#C97E45] mb-8 font-medium">
+                <Link to={location.pathname.startsWith('/customer') ? '/customer/cart' : '/cart'} className="inline-flex items-center text-slate-500 hover:text-[#C97E45] mb-8 font-medium">
                     <ChevronLeft size={20} className="mr-1" /> Back to Cart
                 </Link>
 

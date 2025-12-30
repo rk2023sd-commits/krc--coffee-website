@@ -9,6 +9,10 @@ const {
 } = require('../controllers/productController');
 
 const upload = require('../middleware/uploadMiddleware');
+const reviewRouter = require('./reviewRoutes');
+
+// Re-route into other resource routers
+router.use('/:productId/reviews', reviewRouter);
 
 router.route('/')
     .get(getProducts)

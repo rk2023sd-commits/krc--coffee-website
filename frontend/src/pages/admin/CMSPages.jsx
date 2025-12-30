@@ -3,7 +3,7 @@ import { Save, RefreshCw, LayoutTemplate, HelpCircle, Plus, Trash2, Edit2, Check
 import toast from 'react-hot-toast';
 
 const CMSPages = () => {
-    const [activeTab, setActiveTab] = useState('general');
+    const [activeTab, setActiveTab] = useState('general'); // 'general', 'faqs', 'blogs'
     const [loading, setLoading] = useState(true);
 
     // General Settings State
@@ -147,6 +147,87 @@ const CMSPages = () => {
         setEditingFaq(null);
     };
 
+    // --- Blog Functions ---
+    const [blogs, setBlogs] = useState([]);
+    const [loadingBlogs, setLoadingBlogs] = useState(false);
+    const [isAddingBlog, setIsAddingBlog] = useState(false);
+    const [editingBlog, setEditingBlog] = useState(null);
+    const [blogForm, setBlogForm] = useState({ title: '', content: '', image: '', tags: '' });
+
+    const fetchBlogs = async () => {
+        setLoadingBlogs(true);
+        try {
+            const res = await fetch('http://localhost:5000/api/blogs');
+            const data = await res.json();
+            if (data.success) setBlogs(data.data);
+        } catch (e) { toast.error('Failed to fetch blogs'); }
+        finally { setLoadingBlogs(false); }
+    };
+
+    const handleSaveBlog = async (e) => {
+        e.preventDefault();
+        try {
+            const url = editingBlog ? `http://localhost:5000/api/blogs/${editingBlog._id}` : 'http://localhost:5000/api/blogs';
+            const method = editingBlog ? 'PUT' : 'POST';
+
+            // Process tags
+            const processedForm = {
+                ...blogForm,
+                tags: typeof blogForm.tags === 'string' ? blogForm.tags.split(',').map(t => t.trim()) : blogForm.tags
+            };
+
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(processedForm)
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success(editingBlog ? 'Blog Updated' : 'Blog Published');
+                fetchBlogs();
+                setIsAddingBlog(false);
+                setEditingBlog(null);
+            } else {
+                toast.error(data.message);
+            }
+        } catch (e) { toast.error('Failed to save blog'); }
+    };
+
+    const handleDeleteBlog = async (id) => {
+        if (!confirm('Delete this blog post?')) return;
+        try {
+            await fetch(`http://localhost:5000/api/blogs/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+            });
+            setBlogs(blogs.filter(b => b._id !== id));
+            toast.success('Blog deleted');
+        } catch (e) { toast.error('Failed to delete'); }
+    };
+
+    const openBlogForm = (blog = null) => {
+        if (blog) {
+            setEditingBlog(blog);
+            setBlogForm({
+                title: blog.title,
+                content: blog.content,
+                image: blog.image,
+                tags: blog.tags.join(', ')
+            });
+        } else {
+            setEditingBlog(null);
+            setBlogForm({ title: '', content: '', image: '', tags: '' });
+        }
+        setIsAddingBlog(true);
+    };
+
+    useEffect(() => {
+        if (activeTab === 'blogs') fetchBlogs();
+    }, [activeTab]);
+
     return (
         <div className="max-w-6xl mx-auto">
             <div className="mb-8 flex items-center justify-between">
@@ -171,6 +252,13 @@ const CMSPages = () => {
                 >
                     FAQs
                     {activeTab === 'faqs' && <div className="absolute bottom-0 left-0 w-full h-1 bg-[#C97E45] rounded-t-full"></div>}
+                </button>
+                <button
+                    onClick={() => setActiveTab('blogs')}
+                    className={`pb-4 px-2 font-bold transition-colors relative ${activeTab === 'blogs' ? 'text-[#C97E45]' : 'text-slate-400 hover:text-slate-600'}`}
+                >
+                    Blogs
+                    {activeTab === 'blogs' && <div className="absolute bottom-0 left-0 w-full h-1 bg-[#C97E45] rounded-t-full"></div>}
                 </button>
             </div>
 
@@ -337,6 +425,105 @@ const CMSPages = () => {
                             {faqs.length === 0 && !isAddingFaq && (
                                 <div className="text-center py-12 text-slate-400">No FAQs found. Add one to get started.</div>
                             )}
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Blogs Tab Content */}
+            {activeTab === 'blogs' && (
+                <div className="space-y-6">
+                    <div className="flex justify-between items-center bg-white p-6 rounded-[2rem] border border-slate-100">
+                        <h3 className="font-bold text-lg text-[#2C1810]">All Blog Posts ({blogs.length})</h3>
+                        <button
+                            onClick={() => openBlogForm()}
+                            className="px-6 py-3 bg-[#C97E45] text-white rounded-xl font-bold flex items-center gap-2 hover:bg-[#b06a36] transition-colors"
+                        >
+                            <Plus size={20} /> Write New Post
+                        </button>
+                    </div>
+
+                    {isAddingBlog && (
+                        <div className="bg-white p-8 rounded-[2rem] shadow-lg border border-orange-100 animate-in fade-in slide-in-from-top-4">
+                            <h3 className="font-bold text-lg text-[#2C1810] mb-6">{editingBlog ? 'Edit Post' : 'Write New Post'}</h3>
+                            <form onSubmit={handleSaveBlog} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Title</label>
+                                    <input
+                                        type="text" required
+                                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none font-bold text-lg"
+                                        value={blogForm.title}
+                                        onChange={e => setBlogForm({ ...blogForm, title: e.target.value })}
+                                        placeholder="Enter catchy title..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Cover Image URL</label>
+                                    <input
+                                        type="text"
+                                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none"
+                                        value={blogForm.image}
+                                        onChange={e => setBlogForm({ ...blogForm, image: e.target.value })}
+                                        placeholder="https://..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Content (HTML supported)</label>
+                                    <textarea
+                                        required rows={10}
+                                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none font-mono text-sm"
+                                        value={blogForm.content}
+                                        onChange={e => setBlogForm({ ...blogForm, content: e.target.value })}
+                                        placeholder="<p>Write your article content here...</p>"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Tags (comma separated)</label>
+                                    <input
+                                        type="text"
+                                        className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none"
+                                        value={blogForm.tags}
+                                        onChange={e => setBlogForm({ ...blogForm, tags: e.target.value })}
+                                        placeholder="Coffee, Brewing, Guide"
+                                    />
+                                </div>
+                                <div className="flex justify-end gap-3 pt-4">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsAddingBlog(false)}
+                                        className="px-6 py-3 text-slate-500 font-bold hover:bg-slate-100 rounded-xl"
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="px-8 py-3 bg-[#4A2C2A] text-white rounded-xl font-bold hover:bg-[#2C1810]"
+                                    >
+                                        {editingBlog ? 'Update Post' : 'Publish Post'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    )}
+
+                    {loadingBlogs ? <div className="text-center py-10">Loading Posts...</div> : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {blogs.map(blog => (
+                                <div key={blog._id} className="bg-white p-6 rounded-[1.5rem] border border-slate-100 flex flex-col hover:shadow-lg transition-all group">
+                                    <div className="h-40 bg-slate-100 rounded-2xl mb-4 overflow-hidden">
+                                        <img src={blog.image} alt={blog.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                                    </div>
+                                    <h4 className="font-bold text-[#2C1810] text-lg mb-2 line-clamp-2">{blog.title}</h4>
+                                    <p className="text-sm text-slate-500 line-clamp-3 mb-4">{blog.content.replace(/<[^>]*>?/gm, '')}</p>
+                                    <div className="mt-auto flex justify-between items-center pt-4 border-t border-slate-50">
+                                        <span className="text-xs font-bold text-slate-400">{new Date(blog.createdAt).toLocaleDateString()}</span>
+                                        <div className="flex gap-2">
+                                            <button onClick={() => openBlogForm(blog)} className="p-2 text-slate-400 hover:text-[#C97E45] bg-slate-50 hover:bg-orange-50 rounded-lg"><Edit2 size={16} /></button>
+                                            <button onClick={() => handleDeleteBlog(blog._id)} className="p-2 text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     )}
                 </div>

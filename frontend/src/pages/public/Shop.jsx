@@ -119,21 +119,23 @@ const Shop = () => {
                         {filteredBySearch.map((product) => (
                             <div key={product._id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 group">
                                 <div className="h-72 bg-slate-50 relative overflow-hidden">
-                                    <img
-                                        src={product.image || null}
-                                        alt={product.name}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                                    />
+                                    <Link to={`/product/${product._id}`} className="block w-full h-full">
+                                        <img
+                                            src={product.image || null}
+                                            alt={product.name}
+                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                        />
+                                    </Link>
                                     <div className="absolute top-4 right-4 flex flex-col gap-2">
                                         <button
-                                            onClick={() => toggleWishlist(product)}
-                                            className="p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg text-slate-400 hover:text-red-500 hover:scale-110 transition-all"
+                                            onClick={(e) => { e.preventDefault(); toggleWishlist(product); }}
+                                            className="p-3 bg-white/90 backdrop-blur-sm rounded-full shadow-lg text-slate-400 hover:text-red-500 hover:scale-110 transition-all cursor-pointer z-10 relative"
                                         >
                                             <Heart size={18} className={isInWishlist(product._id) ? "fill-red-500 text-red-500" : ""} />
                                         </button>
                                     </div>
                                     {product.isBestSeller && (
-                                        <div className="absolute top-4 left-4 bg-[#C97E45] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg">
+                                        <div className="absolute top-4 left-4 bg-[#C97E45] text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-lg pointer-events-none">
                                             Best Seller
                                         </div>
                                     )}
@@ -146,7 +148,9 @@ const Shop = () => {
                                             <span className="text-[10px] font-bold ml-1">4.8</span>
                                         </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-[#2C1810] mb-2 font-[Outfit] group-hover:text-[#C97E45] transition-colors">{product.name}</h3>
+                                    <Link to={`/product/${product._id}`}>
+                                        <h3 className="text-xl font-bold text-[#2C1810] mb-2 font-[Outfit] group-hover:text-[#C97E45] transition-colors">{product.name}</h3>
+                                    </Link>
                                     <p className="text-sm text-[#6D5E57] line-clamp-2 mb-6">
                                         {product.description}
                                     </p>

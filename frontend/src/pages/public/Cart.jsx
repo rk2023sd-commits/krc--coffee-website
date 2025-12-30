@@ -1,11 +1,12 @@
 import React from 'react';
 import { useCart } from '../../context/CartContext';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Trash } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Cart = () => {
     const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
     const navigate = useNavigate();
+    const location = useLocation();
 
     if (cartItems.length === 0) {
         return (
@@ -110,7 +111,10 @@ const Cart = () => {
                             </div>
 
                             <button
-                                onClick={() => navigate('/checkout')}
+                                onClick={() => {
+                                    const isCustomer = location.pathname.startsWith('/customer');
+                                    navigate(isCustomer ? '/customer/checkout' : '/checkout');
+                                }}
                                 className="w-full bg-[#4A2C2A] text-white py-4 rounded-2xl font-bold shadow-xl shadow-[#4A2C2A]/20 hover:bg-[#2C1810] flex items-center justify-center group transition-all"
                             >
                                 <span>Proceed to Checkout</span>

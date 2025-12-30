@@ -112,11 +112,13 @@ const Home = () => {
                             {bestSellers.map((product) => (
                                 <div key={product._id} className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all overflow-hidden group border border-[#eee]">
                                     <div className="h-64 bg-[#F9F9F9] relative overflow-hidden">
-                                        <img
-                                            src={product.image || null}
-                                            alt={product.name}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                                        />
+                                        <Link to={`/product/${product._id}`} className="block w-full h-full">
+                                            <img
+                                                src={product.image || null}
+                                                alt={product.name}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                            />
+                                        </Link>
                                         <button
                                             onClick={() => toggleWishlist(product)}
                                             className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-md cursor-pointer hover:scale-110 transition-all text-slate-400 hover:text-red-500"
@@ -126,7 +128,9 @@ const Home = () => {
                                     </div>
                                     <div className="p-6">
                                         <p className="text-[#C97E45] text-xs font-bold tracking-wider mb-2 uppercase">{product.category}</p>
-                                        <h3 className="text-lg font-bold mb-2 font-[Outfit] group-hover:text-[#C97E45] transition-colors truncate">{product.name}</h3>
+                                        <Link to={`/product/${product._id}`}>
+                                            <h3 className="text-lg font-bold mb-2 font-[Outfit] group-hover:text-[#C97E45] transition-colors truncate">{product.name}</h3>
+                                        </Link>
                                         <div className="flex justify-between items-center mt-4">
                                             <span className="text-xl font-bold text-[#2C1810]">₹{product.price}</span>
                                             <button
@@ -145,6 +149,50 @@ const Home = () => {
 
                     <div className="text-center mt-12">
                         <Link to="/shop/all" className="inline-block px-8 py-3 rounded-full border-2 border-[#4A2C2A] text-[#4A2C2A] font-bold hover:bg-[#4A2C2A] hover:text-white transition-all">View All Products</Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* From The Journal */}
+            <section className="py-20 bg-white">
+                <div className="container mx-auto px-12">
+                    <div className="flex justify-between items-end mb-12">
+                        <div>
+                            <h2 className="text-4xl font-bold font-[Outfit] mb-4">From The Journal</h2>
+                            <p className="text-[#6D5E57]">Stories, brewing guides, and news from the world of coffee.</p>
+                        </div>
+                        <Link to="/blog" className="hidden md:flex items-center text-[#C97E45] font-bold hover:translate-x-1 transition-transform">
+                            Read All Stories <ArrowRight size={20} className="ml-2" />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <Link to="/blog" className="group relative h-80 rounded-[2rem] overflow-hidden cursor-pointer">
+                            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors z-10"></div>
+                            <img
+                                src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=800&q=80"
+                                alt="Coffee Brewing"
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            />
+                            <div className="absolute bottom-0 left-0 p-8 z-20 text-white">
+                                <span className="px-3 py-1 bg-[#C97E45] text-xs font-bold rounded-full uppercase tracking-wider mb-3 inline-block">Brewing Guide</span>
+                                <h3 className="text-2xl font-bold font-[Outfit] mb-2 group-hover:text-orange-100 transition-colors">How to Brew the Perfect Pour-Over</h3>
+                                <p className="text-white/80 text-sm line-clamp-2">Master the art of manual brewing with our step-by-step guide...</p>
+                            </div>
+                        </Link>
+                        <Link to="/blog" className="group relative h-80 rounded-[2rem] overflow-hidden cursor-pointer">
+                            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors z-10"></div>
+                            <img
+                                src="https://images.unsplash.com/photo-1447933601403-0c6688de566e?auto=format&fit=crop&w=800&q=80"
+                                alt="Coffee Beans"
+                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            />
+                            <div className="absolute bottom-0 left-0 p-8 z-20 text-white">
+                                <span className="px-3 py-1 bg-[#2C1810] text-xs font-bold rounded-full uppercase tracking-wider mb-3 inline-block">Origins</span>
+                                <h3 className="text-2xl font-bold font-[Outfit] mb-2 group-hover:text-orange-100 transition-colors">The Journey of Your Coffee Bean</h3>
+                                <p className="text-white/80 text-sm line-clamp-2">From the high-altitude estates of Coorg to your morning cup...</p>
+                            </div>
+                        </Link>
                     </div>
                 </div>
             </section>

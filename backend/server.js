@@ -28,6 +28,7 @@ app.use('/api/offers', require('./routes/offerRoutes'));
 app.use('/api/notifications', require('./routes/notificationRoutes'));
 app.use('/api/wishlist', require('./routes/wishlistRoutes'));
 app.use('/api/cms', require('./routes/cmsRoutes'));
+app.use('/api/blogs', require('./routes/blogRoutes'));
 
 app.get('/', (req, res) => {
     res.send('KRC! Coffee API is running...');

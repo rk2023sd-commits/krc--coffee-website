@@ -13,10 +13,13 @@ import Register from './pages/public/Register';
 import Shop from './pages/public/Shop';
 import Cart from './pages/public/Cart';
 import Checkout from './pages/public/Checkout';
+import ProductDetails from './pages/public/ProductDetails';
 import PublicOffers from './pages/public/Offers';
 import About from './pages/public/About';
 import Contact from './pages/public/Contact';
 import FAQs from './pages/public/FAQs';
+import BlogList from './pages/public/BlogList';
+import BlogPost from './pages/public/BlogPost';
 
 // Customer Pages
 import Addresses from './pages/customer/Addresses';
@@ -77,13 +80,15 @@ function App() {
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<Home />} />
           <Route path="shop/:category" element={<Shop />} />
+          <Route path="product/:id" element={<ProductDetails />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
           <Route path="offers" element={<PublicOffers />} />
           <Route path="about" element={<About />} />
           <Route path="contact" element={<Contact />} />
           <Route path="faqs" element={<FAQs />} />
-          <Route path="blog" element={<Placeholder title="Blog" />} />
+          <Route path="blog" element={<BlogList />} />
+          <Route path="blog/:slug" element={<BlogPost />} />
           <Route path="reviews" element={<Placeholder title="Reviews" />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
