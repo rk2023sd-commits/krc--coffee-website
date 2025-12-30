@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const Notification = require('../models/Notification');
+const sendEmail = require('../utils/sendEmail');
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -14,6 +15,7 @@ const generateToken = (id) => {
 // @access  Public
 exports.register = async (req, res) => {
     const { name, email, phone, password, role } = req.body;
+    console.log('Register Request Body:', JSON.stringify(req.body, null, 2));
 
     try {
         let user = await User.findOne({ email });
@@ -31,6 +33,8 @@ exports.register = async (req, res) => {
         });
 
         // Create Welcome Notification
+        console.log('Checkpoint: User created, ID:', user._id);
+
         try {
             await Notification.create({
                 user: user._id,
@@ -38,8 +42,27 @@ exports.register = async (req, res) => {
                 message: `Hello ${user.name}, thank you for joining our community! Enjoy your premium coffee journey.`,
                 type: 'account'
             });
+            console.log('Checkpoint: Notification created');
         } catch (notifErr) {
             console.error('Welcome notification failed:', notifErr.message);
+        }
+
+        // Send Welcome Email
+        try {
+            console.log('Checkpoint: Attempting to send email to', user.email);
+            await sendEmail({
+                email: user.email,
+                subject: 'Welcome to KRC! Coffee ☕',
+                message: `<h1>Welcome to KRC! Coffee</h1>
+                          <p>Hi ${user.name},</p>
+                          <p>Thank you for joining us! We are excited to serve you the best coffee.</p>
+                          <p>Login to your account to start ordering.</p>`
+            });
+            console.log('Checkpoint: Email sent');
+        } catch (emailErr) {
+            console.error('Welcome email failed:', emailErr.message);
+            console.error(emailErr); // Log full email error
+            // We don't stop the registration if email fails
         }
 
         const token = generateToken(user._id);
@@ -56,8 +79,8 @@ exports.register = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Server Error', error: error.message });
+        console.error('Registration Main Catch Error:', error);
+        res.status(500).json({ success: false, message: 'Server Error', error: error.message, stack: error.stack });
     }
 };
 

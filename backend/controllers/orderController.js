@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const Notification = require('../models/Notification');
 const User = require('../models/User');
 const Offer = require('../models/Offer');
+const sendEmail = require('../utils/sendEmail');
 
 // @desc    Create new order
 // @route   POST /api/orders
@@ -92,6 +93,28 @@ exports.addOrderItems = async (req, res) => {
                 }
             } else {
                 console.log('No user ID provided for notification upon order placement.');
+            }
+
+            // Send Order Confirmation Email (To User if available, or just email in order?)
+            // Assuming we only send if we have a user email OR if it was passed in checkout (not implemented yet in model)
+            // For now, let's look up the user email if user exists
+            if (user) {
+                try {
+                    const orderUser = await User.findById(user);
+                    if (orderUser) {
+                        await sendEmail({
+                            email: orderUser.email,
+                            subject: 'Order Confirmation - KRC! Coffee',
+                            message: `<h1>Thank You for Your Order!</h1>
+                                      <p>Hi ${orderUser.name},</p>
+                                      <p>We have received your order <strong>#${createdOrder._id.toString().slice(-6).toUpperCase()}</strong>.</p>
+                                      <p>Total Amount: ₹${createdOrder.totalPrice}</p>
+                                      <p>We will notify you once it ships!</p>`
+                        });
+                    }
+                } catch (emailErr) {
+                    console.error('Order email failed:', emailErr.message);
+                }
             }
 
             res.status(201).json(createdOrder);
