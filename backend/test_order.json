@@ -1,0 +1,19 @@
+{
+    "orderItems": [
+        {
+            "product": "694bf3118e45979bb761d106",
+            "name": "Classic Cappuccino",
+            "quantity": 1,
+            "price": 199,
+            "image": ""
+        }
+    ],
+    "shippingAddress": {
+        "address": "123 Test St",
+        "city": "Test City",
+        "pincode": "302001",
+        "phone": "9999888877"
+    },
+    "paymentMethod": "COD",
+    "totalPrice": 199
+}
