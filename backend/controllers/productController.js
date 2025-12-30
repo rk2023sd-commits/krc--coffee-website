@@ -36,6 +36,11 @@ exports.getProduct = async (req, res) => {
 // @access  Private/Admin (for now basic)
 exports.createProduct = async (req, res) => {
     try {
+        if (req.file) {
+            const url = `${req.protocol}://${req.get('host')}`;
+            req.body.image = `${url}/uploads/${req.file.filename}`;
+        }
+
         const product = await Product.create(req.body);
         res.status(201).json({
             success: true,
@@ -55,6 +60,12 @@ exports.updateProduct = async (req, res) => {
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
+
+        if (req.file) {
+            const url = `${req.protocol}://${req.get('host')}`;
+            req.body.image = `${url}/uploads/${req.file.filename}`;
+        }
+
         product = await Product.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true

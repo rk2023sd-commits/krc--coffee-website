@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Package, DollarSign, Tag, Info, Image as ImageIcon, Plus, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Package, DollarSign, Tag, Info, Image as ImageIcon, Plus, CheckCircle2, AlertCircle, UploadCloud, X } from 'lucide-react';
 
 const AddProduct = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [imageFile, setImageFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState('');
 
     const [formData, setFormData] = useState({
         name: '',
@@ -12,7 +14,6 @@ const AddProduct = () => {
         price: '',
         category: 'Coffee',
         stock: '',
-        image: '',
         isBestSeller: false
     });
 
@@ -24,22 +25,49 @@ const AddProduct = () => {
         });
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewUrl(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const removeImage = () => {
+        setImageFile(null);
+        setPreviewUrl('');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
         setSuccess('');
 
+        // Use FormData for file upload
+        const data = new FormData();
+        data.append('name', formData.name);
+        data.append('description', formData.description);
+        data.append('price', formData.price);
+        data.append('category', formData.category);
+        data.append('stock', formData.stock);
+        data.append('isBestSeller', formData.isBestSeller);
+        if (imageFile) {
+            data.append('image', imageFile);
+        }
+
         try {
             const response = await fetch('http://localhost:5000/api/products', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
+                // Content-Type header is not set manually for FormData, fetch does it automatically
+                body: data,
             });
 
-            const data = await response.json();
+            const result = await response.json();
 
             if (response.ok) {
                 setSuccess('Product added successfully!');
@@ -49,11 +77,12 @@ const AddProduct = () => {
                     price: '',
                     category: 'Coffee',
                     stock: '',
-                    image: '',
                     isBestSeller: false
                 });
+                setImageFile(null);
+                setPreviewUrl('');
             } else {
-                setError(data.message || 'Failed to add product');
+                setError(result.message || 'Failed to add product');
             }
         } catch (err) {
             setError('Something went wrong. Please check your connection.');
@@ -175,19 +204,41 @@ const AddProduct = () => {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-sm font-semibold text-[#4A2C2A]">Image URL</label>
-                        <div className="relative">
-                            <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
-                            <input
-                                type="text"
-                                name="image"
-                                value={formData.image}
-                                onChange={handleChange}
-                                placeholder="https://unsplash.com/..."
-                                className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none transition-all"
-                            />
-                        </div>
-                        <p className="text-[10px] text-slate-400 italic mt-1">Leave blank to use a default placeholder.</p>
+                        <label className="text-sm font-semibold text-[#4A2C2A]">Product Image</label>
+
+                        {!previewUrl ? (
+                            <div className="relative border-2 border-dashed border-slate-200 rounded-xl p-8 text-center hover:bg-slate-50 transition-colors cursor-pointer group">
+                                <input
+                                    type="file"
+                                    name="image"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                                <div className="flex flex-col items-center justify-center text-slate-400 group-hover:text-[#C97E45] transition-colors">
+                                    <UploadCloud size={48} className="mb-4" />
+                                    <span className="font-semibold text-sm">Click to upload or drag and drop</span>
+                                    <span className="text-xs mt-1">SVG, PNG, JPG or GIF (max. 5MB)</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="relative rounded-xl overflow-hidden border border-slate-200 group">
+                                <img
+                                    src={previewUrl}
+                                    alt="Preview"
+                                    className="w-full h-64 object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                    <button
+                                        type="button"
+                                        onClick={removeImage}
+                                        className="bg-white/90 p-3 rounded-full text-red-500 hover:bg-white hover:scale-110 transition-all font-bold"
+                                    >
+                                        <X size={24} />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     <div className="flex items-center p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50">

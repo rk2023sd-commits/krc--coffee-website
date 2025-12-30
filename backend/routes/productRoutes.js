@@ -8,13 +8,15 @@ const {
     deleteProduct
 } = require('../controllers/productController');
 
+const upload = require('../middleware/uploadMiddleware');
+
 router.route('/')
     .get(getProducts)
-    .post(createProduct);
+    .post(upload.single('image'), createProduct);
 
 router.route('/:id')
     .get(getProduct)
-    .put(updateProduct)
+    .put(upload.single('image'), updateProduct)
     .delete(deleteProduct);
 
 module.exports = router;
