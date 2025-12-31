@@ -69,11 +69,11 @@ const About = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="relative animate-fade-in-delay-1">
+                    <div className="relative animate-fade-in-delay-1 max-w-xs mx-auto">
                         <div className="absolute top-[-20px] right-[-20px] w-24 h-24 bg-[#F5E6D3] rounded-full z-0"></div>
                         <div className="absolute bottom-[-20px] left-[-20px] w-32 h-32 bg-[#4A2C2A] rounded-full opacity-10 z-0"></div>
                         <img
-                            src="https://images.unsplash.com/photo-1511537632536-b7a460582209?q=80&w=2574&auto=format&fit=crop"
+                            src="https://images.unsplash.com/photo-1512568400610-62da28bc8a13?q=80&w=2574&auto=format&fit=crop"
                             alt="Coffee Pouring"
                             className="rounded-[2.5rem] shadow-2xl relative z-10 w-full object-cover transform hover:scale-[1.02] transition-transform duration-500"
                         />
