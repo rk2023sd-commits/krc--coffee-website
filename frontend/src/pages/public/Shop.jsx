@@ -55,11 +55,7 @@ const Shop = () => {
             }
         };
         fetchProducts();
-    }, [category, location.search]); // We should also listen to location changes, strictly speaking. But let's see. Need to add dependency on window.location.search or similar. 
-    // Actually standard react-router pattern is to use useLocation. 
-    // Since I can't easily add hooks in this block, I will stick to [category, window.location.search] which might not be valid dep.
-    // Better: Add useLocation to imports in next step to be safe. For now, empty dep array + category is unsafe for query params.
-    // I will replace the component start to include useLocation.
+    }, [category, useLocation().search]);
 
     const filteredBySearch = products.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -67,7 +63,7 @@ const Shop = () => {
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] py-12">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-20">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
                     <div>

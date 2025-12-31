@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import PublicNavbar from '../components/PublicNavbar';
 
 const PublicLayout = () => {
@@ -10,7 +10,7 @@ const PublicLayout = () => {
                 <Outlet />
             </main>
             <footer className="bg-[#2C1810] text-white py-12">
-                <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="container mx-auto px-20 grid grid-cols-1 md:grid-cols-4 gap-12">
                     <div>
                         <h3 className="text-2xl font-[Outfit] font-bold mb-4 text-[#C97E45]">KRC! Coffee</h3>
                         <p className="text-gray-400">Premium coffee experience delivered to your doorstep.</p>
@@ -18,17 +18,17 @@ const PublicLayout = () => {
                     <div>
                         <h4 className="font-bold mb-4">Shop</h4>
                         <ul className="space-y-2 text-gray-400">
-                            <li>Coffee</li>
-                            <li>Cold Coffee</li>
-                            <li>Snacks</li>
+                            <li><Link to="/shop/coffee" className="hover:text-[#C97E45] transition-colors">Coffee</Link></li>
+                            <li><Link to="/shop/cold-coffee" className="hover:text-[#C97E45] transition-colors">Cold Coffee</Link></li>
+                            <li><Link to="/shop/snacks" className="hover:text-[#C97E45] transition-colors">Snacks</Link></li>
                         </ul>
                     </div>
                     <div>
                         <h4 className="font-bold mb-4">Support</h4>
                         <ul className="space-y-2 text-gray-400">
-                            <li>Contact Us</li>
-                            <li>FAQs</li>
-                            <li>Shipping Policy</li>
+                            <li><Link to="/contact" className="hover:text-[#C97E45] transition-colors">Contact Us</Link></li>
+                            <li><Link to="/faqs" className="hover:text-[#C97E45] transition-colors">FAQs</Link></li>
+                            <li><Link to="#" className="hover:text-[#C97E45] transition-colors">Shipping Policy</Link></li>
                         </ul>
                     </div>
                     <div>

@@ -11,7 +11,7 @@ const PublicNavbar = () => {
 
   return (
     <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-[#e5e7eb]">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-20">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold font-[Outfit] text-[#4A2C2A]">

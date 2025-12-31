@@ -45,7 +45,7 @@ const Home = () => {
         <div className="font-[Inter]">
             {/* Hero Section */}
             <section className="relative h-[600px] flex items-center justify-between overflow-hidden bg-[#FDFBF7]">
-                <div className="container mx-auto px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
+                <div className="container mx-auto px-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center relative z-10">
                     <div className="space-y-6 ">
                         <span className="inline-block bg-[#F4E4D0] text-[#4A2C2A] px-4 py-1 rounded-full text-sm font-semibold tracking-wide">
                             PREMIUM COFFEE BLENDS
@@ -80,7 +80,7 @@ const Home = () => {
 
             {/* Features Grid */}
             <section className="py-20 bg-white">
-                <div className="container mx-auto px-12">
+                <div className="container mx-auto px-20">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                         {features.map((feature, index) => (
                             <div key={index} className="p-8 rounded-2xl bg-[#FFF8E7] hover:bg-[#FFEEC3] transition-colors text-center group cursor-pointer">

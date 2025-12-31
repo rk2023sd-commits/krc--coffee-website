@@ -1,21 +1,40 @@
-import React, { useState } from 'react';
-import { Package, DollarSign, Tag, Info, Image as ImageIcon, Plus, CheckCircle2, AlertCircle, UploadCloud, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { AlertCircle, CheckCircle2, Info, Package, DollarSign, Tag, UploadCloud, X, Plus } from 'lucide-react';
 
 const AddProduct = () => {
+    const [categories, setCategories] = useState([]);
+    const [imageFile, setImageFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
-    const [imageFile, setImageFile] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState('');
-
     const [formData, setFormData] = useState({
         name: '',
         description: '',
         price: '',
-        category: 'Coffee',
+        category: '',
         stock: '',
         isBestSeller: false
     });
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch('http://localhost:5000/api/categories');
+                const data = await res.json();
+                if (data.success) {
+                    setCategories(data.data);
+                    // Set default category if available and not already set
+                    if (data.data.length > 0 && !formData.category) {
+                        setFormData(prev => ({ ...prev, category: data.data[0].name }));
+                    }
+                }
+            } catch (err) {
+                console.error('Failed to load categories');
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -61,8 +80,12 @@ const AddProduct = () => {
         }
 
         try {
+            const token = localStorage.getItem('token');
             const response = await fetch('http://localhost:5000/api/products', {
                 method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
                 // Content-Type header is not set manually for FormData, fetch does it automatically
                 body: data,
             });
@@ -75,7 +98,7 @@ const AddProduct = () => {
                     name: '',
                     description: '',
                     price: '',
-                    category: 'Coffee',
+                    category: categories.length > 0 ? categories[0].name : '',
                     stock: '',
                     isBestSeller: false
                 });
@@ -195,11 +218,10 @@ const AddProduct = () => {
                             onChange={handleChange}
                             className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none transition-all"
                         >
-                            <option value="Coffee">Coffee</option>
-                            <option value="Cold Coffee">Cold Coffee</option>
-                            <option value="Snacks">Snacks</option>
-                            <option value="Combos">Combos</option>
-                            <option value="Gift Packs">Gift Packs</option>
+                            <option value="">Select Category</option>
+                            {categories.map(cat => (
+                                <option key={cat._id} value={cat.name}>{cat.name}</option>
+                            ))}
                         </select>
                     </div>
 

@@ -9,6 +9,14 @@ dotenv.config();
 // Connect to DB
 mongoose.connect(process.env.MONGO_URI);
 
+const categories = [
+    { name: 'Coffee', description: 'Hot and fresh coffee varieties' },
+    { name: 'Cold Coffee', description: 'Chilled coffee beverages' },
+    { name: 'Snacks', description: 'Tasty snacks to go with your coffee' },
+    { name: 'Combos', description: 'Perfect combinations of drinks and food' },
+    { name: 'Gift Packs', description: 'Special gift packs for coffee lovers' }
+];
+
 const products = [
     // --- COFFEE (10 items) ---
     {
@@ -573,8 +581,10 @@ const products = [
 
 const importData = async () => {
     try {
-        await Product.deleteMany(); // Clear existing products
+        await Product.deleteMany();
+        await Category.deleteMany();
 
+        await Category.insertMany(categories);
         await Product.insertMany(products);
 
         console.log('Data Imported!');
@@ -588,6 +598,7 @@ const importData = async () => {
 const destroyData = async () => {
     try {
         await Product.deleteMany();
+        await Category.deleteMany();
         console.log('Data Destroyed!');
         process.exit();
     } catch (error) {

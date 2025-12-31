@@ -19,15 +19,21 @@ const Categories = () => {
 
     const fetchCategories = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/categories');
+            const token = localStorage.getItem('token');
+            const res = await fetch('http://localhost:5000/api/categories', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             const data = await res.json();
             if (data.success) {
                 setCategories(data.data);
             } else {
-                setError('Failed to load categories');
+                setError(data.error || data.message || 'Failed to load categories');
             }
         } catch (err) {
-            setError('Connection error');
+            console.error(err);
+            setError('Connection error. Please ensure backend is running.');
         } finally {
             setLoading(false);
         }
@@ -43,23 +49,34 @@ const Categories = () => {
         setError('');
         setSuccess('');
 
+        if (!newCategory.name.trim()) {
+            setError('Category name is required');
+            setSubmitLoading(false);
+            return;
+        }
+
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch('http://localhost:5000/api/categories', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify(newCategory)
             });
             const data = await res.json();
 
             if (data.success) {
                 setSuccess('Category added successfully!');
-                setCategories([...categories, data.data]);
+                setCategories([data.data, ...categories]); // Add to top
                 setNewCategory({ name: '', description: '' });
             } else {
-                setError(data.error || 'Failed to add category');
+                setError(data.error || data.message || 'Failed to add category');
             }
         } catch (err) {
-            setError('Something went wrong');
+            console.error(err);
+            setError('Something went wrong. check console.');
         } finally {
             setSubmitLoading(false);
         }
@@ -69,14 +86,19 @@ const Categories = () => {
         if (!window.confirm('Are you sure you want to delete this category?')) return;
 
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
             const data = await res.json();
             if (data.success) {
                 setCategories(categories.filter(c => c._id !== id));
+                setSuccess('Category deleted.');
             } else {
-                alert('Failed to delete category');
+                alert(data.error || data.message || 'Failed to delete category');
             }
         } catch (err) {
             alert('Connection error');

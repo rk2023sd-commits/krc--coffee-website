@@ -110,7 +110,7 @@ const ProductDetails = () => {
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] py-12 font-[Inter]">
-            <div className="container mx-auto px-4 max-w-6xl">
+            <div className="container mx-auto px-20 max-w-6xl">
                 {/* Breadcrumbs & Back */}
                 <div className="flex items-center justify-between mb-8">
                     <Link to="/shop/all" className="flex items-center text-[#6D5E57] hover:text-[#C97E45] transition-colors font-medium">

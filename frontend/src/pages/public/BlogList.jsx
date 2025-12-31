@@ -50,7 +50,7 @@ const BlogList = () => {
             </div>
 
             {/* Blog Grid */}
-            <div className="container mx-auto px-4 py-16">
+            <div className="container mx-auto px-20 py-16">
                 {blogs.length === 0 ? (
                     <div className="text-center py-20">
                         <p className="text-[#6D5E57] text-xl">No stories published yet. Stay tuned!</p>
