@@ -221,6 +221,23 @@ exports.updateOrderStatus = async (req, res) => {
                 }
             }
 
+            // Send Status Update Email
+            try {
+                const orderUser = await User.findById(order.user);
+                if (orderUser) {
+                    await sendEmail({
+                        email: orderUser.email,
+                        subject: `Order Update: ${status} - KRC! Coffee`,
+                        message: `<h1>Order Status Update</h1>
+                                      <p>Hi ${orderUser.name},</p>
+                                      <p>Your order <strong>#${order._id.toString().slice(-6).toUpperCase()}</strong> status has been updated to: <strong>${status}</strong>.</p>
+                                      ${status === 'Delivered' ? '<p>Thank you for shopping with us! We hope you enjoy your coffee.</p>' : ''}
+                                      <p>If you have any questions, please reply to this email.</p>`
+                    });
+                }
+            } catch (emailErr) {
+                console.error('Status update email failed:', emailErr.message);
+            }
 
             res.json(updatedOrder);
         } else {
@@ -244,6 +261,26 @@ exports.updateOrderToDelivered = async (req, res) => {
             order.status = 'Delivered';
 
             const updatedOrder = await order.save();
+
+            // Send Delivered Email
+            if (order.user) {
+                try {
+                    const orderUser = await User.findById(order.user);
+                    if (orderUser) {
+                        await sendEmail({
+                            email: orderUser.email,
+                            subject: 'Order Delivered - KRC! Coffee',
+                            message: `<h1>Your Order has been Delivered!</h1>
+                                      <p>Hi ${orderUser.name},</p>
+                                      <p>Good news! Your order <strong>#${order._id.toString().slice(-6).toUpperCase()}</strong> has been delivered.</p>
+                                      <p>Thank you for choosing KRC! Coffee.</p>`
+                        });
+                    }
+                } catch (emailErr) {
+                    console.error('Delivered email failed:', emailErr.message);
+                }
+            }
+
             res.json(updatedOrder);
         } else {
             res.status(404).json({ message: 'Order not found' });

@@ -20,6 +20,8 @@ import Contact from './pages/public/Contact';
 import FAQs from './pages/public/FAQs';
 import BlogList from './pages/public/BlogList';
 import BlogPost from './pages/public/BlogPost';
+import ForgotPassword from './pages/public/ForgotPassword';
+import ResetPassword from './pages/public/ResetPassword';
 
 // Customer Pages
 import Addresses from './pages/customer/Addresses';
@@ -92,6 +94,8 @@ function App() {
           <Route path="reviews" element={<Placeholder title="Reviews" />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password/:token" element={<ResetPassword />} />
         </Route>
 
         {/* Customer Routes */}
