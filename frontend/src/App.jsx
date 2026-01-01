@@ -114,6 +114,8 @@ function App() {
 
 
           <Route path="shop" element={<Shop />} />
+          <Route path="shop/:category" element={<Shop />} />
+          <Route path="product/:id" element={<ProductDetails />} />
           <Route path="new-arrivals" element={<NewArrivals />} />
           <Route path="best-sellers" element={<BestSellers />} />
           <Route path="offers" element={<CustomerOffers />} />

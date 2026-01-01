@@ -19,6 +19,11 @@ const Shop = () => {
         setTimeout(() => setAddedId(null), 2000);
     };
 
+    const location = useLocation();
+    const isCustomer = location.pathname.startsWith('/customer');
+    const productBase = isCustomer ? '/customer/product' : '/product';
+    const shopBase = isCustomer ? '/customer/shop/all' : '/shop/all';
+
     // Standard search params handling in useEffect below
 
     useEffect(() => {
@@ -106,7 +111,7 @@ const Shop = () => {
                         <Coffee className="mx-auto text-slate-200 mb-4" size={64} />
                         <h2 className="text-2xl font-bold text-[#4A2C2A] mb-2">No Products Found</h2>
                         <p className="text-slate-500">Try searching for something else or browse all products.</p>
-                        <Link to="/shop/all" className="mt-8 inline-block bg-[#4A2C2A] text-white px-8 py-3 rounded-full font-bold">
+                        <Link to={shopBase} className="mt-8 inline-block bg-[#4A2C2A] text-white px-8 py-3 rounded-full font-bold">
                             Back to All Coffee
                         </Link>
                     </div>
@@ -115,7 +120,7 @@ const Shop = () => {
                         {filteredBySearch.map((product) => (
                             <div key={product._id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 group">
                                 <div className="h-72 bg-slate-50 relative overflow-hidden">
-                                    <Link to={`/product/${product._id}`} className="block w-full h-full">
+                                    <Link to={`${productBase}/${product._id}`} className="block w-full h-full">
                                         <img
                                             src={product.image || null}
                                             alt={product.name}
@@ -144,7 +149,7 @@ const Shop = () => {
                                             <span className="text-[10px] font-bold ml-1">4.8</span>
                                         </div>
                                     </div>
-                                    <Link to={`/product/${product._id}`}>
+                                    <Link to={`${productBase}/${product._id}`}>
                                         <h3 className="text-xl font-bold text-[#2C1810] mb-2 font-[Outfit] group-hover:text-[#C97E45] transition-colors">{product.name}</h3>
                                     </Link>
                                     <p className="text-sm text-[#6D5E57] line-clamp-2 mb-6">

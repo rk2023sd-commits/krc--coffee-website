@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import {
     ShoppingBag, Star, Heart, ArrowLeft, Plus, Minus,
     Share2, Truck, ShieldCheck, Clock, Coffee, CheckCircle2
@@ -10,8 +10,13 @@ import { useWishlist } from '../../context/WishlistContext';
 const ProductDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const location = useLocation();
     const { addToCart } = useCart();
     const { toggleWishlist, isInWishlist } = useWishlist();
+
+    const isCustomer = location.pathname.startsWith('/customer');
+    const shopAllLink = isCustomer ? '/customer/shop/all' : '/shop/all';
+    const homeLink = isCustomer ? '/customer/home' : '/';
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -44,18 +49,18 @@ const ProductDetails = () => {
                 if (data.success) {
                     setProduct(data.data);
                 } else {
-                    navigate('/shop/all');
+                    navigate(shopAllLink);
                 }
             } catch (err) {
                 console.error(err);
-                navigate('/shop/all');
+                navigate(shopAllLink);
             } finally {
                 setLoading(false);
             }
         };
         fetchProduct();
         fetchReviews();
-    }, [id, navigate]);
+    }, [id, navigate, shopAllLink]);
 
     const handleAddToCart = () => {
         if (!product) return;
@@ -113,13 +118,13 @@ const ProductDetails = () => {
             <div className="container mx-auto px-20 max-w-6xl">
                 {/* Breadcrumbs & Back */}
                 <div className="flex items-center justify-between mb-8">
-                    <Link to="/shop/all" className="flex items-center text-[#6D5E57] hover:text-[#C97E45] transition-colors font-medium">
+                    <Link to={shopAllLink} className="flex items-center text-[#6D5E57] hover:text-[#C97E45] transition-colors font-medium">
                         <ArrowLeft size={20} className="mr-2" /> Back to Shop
                     </Link>
                     <div className="flex items-center space-x-2 text-sm text-[#6D5E57]">
-                        <Link to="/" className="hover:text-[#4A2C2A]">Home</Link>
+                        <Link to={homeLink} className="hover:text-[#4A2C2A]">Home</Link>
                         <span>/</span>
-                        <Link to="/shop/all" className="hover:text-[#4A2C2A]">Shop</Link>
+                        <Link to={shopAllLink} className="hover:text-[#4A2C2A]">Shop</Link>
                         <span>/</span>
                         <span className="text-[#C97E45] font-bold">{product.name}</span>
                     </div>
