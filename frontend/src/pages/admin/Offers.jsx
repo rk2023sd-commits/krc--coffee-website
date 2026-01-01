@@ -220,46 +220,62 @@ const Offers = () => {
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {offers.map(offer => (
-                        <div key={offer._id} className={`bg-white p-6 rounded-[2rem] border transition-all ${offer.isActive ? 'border-slate-100 shadow-sm' : 'border-slate-100 opacity-60 bg-slate-50'}`}>
-                            <div className="flex justify-between items-start mb-4">
-                                <div className={`inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold font-mono ${offer.isActive ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-500'}`}>
-                                    {offer.code}
+                    {offers.map(offer => {
+                        const isExpired = new Date(offer.validUntil) < new Date();
+                        // It is effectively active only if isActive is true AND it is not expired
+                        const isEffectiveActive = offer.isActive && !isExpired;
+
+                        return (
+                            <div key={offer._id} className={`bg-white p-6 rounded-[2rem] border transition-all ${isEffectiveActive ? 'border-slate-100 shadow-sm' : 'border-slate-100 opacity-60 bg-slate-50'}`}>
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="flex items-center">
+                                        <div className={`inline-flex items-center px-3 py-1 rounded-lg text-sm font-bold font-mono ${isEffectiveActive ? 'bg-green-100 text-green-700' : 'bg-slate-200 text-slate-500'}`}>
+                                            {offer.code}
+                                        </div>
+                                        {isExpired && (
+                                            <span className="ml-2 px-2 py-1 bg-red-100 text-red-600 text-[10px] font-bold rounded-full uppercase tracking-wide border border-red-200">
+                                                Expired
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={() => handleToggle(offer._id)}
+                                            disabled={isExpired}
+                                            className={`p-2 rounded-lg transition-colors ${isEffectiveActive ? 'text-green-600 bg-green-50 hover:bg-green-100' : 'text-slate-400 bg-slate-100 hover:bg-slate-200'} ${isExpired ? 'cursor-not-allowed opacity-50' : ''}`}
+                                            title={isExpired ? 'Coupon Expired' : (offer.isActive ? 'Deactivate' : 'Activate')}
+                                        >
+                                            <Power size={18} />
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(offer._id)}
+                                            className="p-2 text-red-400 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+                                        >
+                                            <Trash2 size={18} />
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="flex space-x-2">
-                                    <button
-                                        onClick={() => handleToggle(offer._id)}
-                                        className={`p-2 rounded-lg transition-colors ${offer.isActive ? 'text-green-600 bg-green-50 hover:bg-green-100' : 'text-slate-400 bg-slate-100 hover:bg-slate-200'}`}
-                                        title={offer.isActive ? 'Deactivate' : 'Activate'}
-                                    >
-                                        <Power size={18} />
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(offer._id)}
-                                        className="p-2 text-red-400 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
-                                    >
-                                        <Trash2 size={18} />
-                                    </button>
+
+                                <h3 className="font-bold text-[#2C1810] text-lg mb-1">{offer.description}</h3>
+                                <p className="text-[#C97E45] font-bold text-2xl mb-4">
+                                    {offer.discountType === 'percentage' ? `${offer.discountValue}% OFF` : `₹${offer.discountValue} OFF`}
+                                </p>
+
+                                <div className="space-y-2 text-sm text-slate-500">
+                                    <div className="flex items-center">
+                                        <Tag size={14} className="mr-2" />
+                                        Min. Order: ₹{offer.minOrderValue}
+                                    </div>
+                                    <div className="flex items-center">
+                                        <Calendar size={14} className={`mr-2 ${isExpired ? 'text-red-500' : ''}`} />
+                                        <span className={isExpired ? 'text-red-500 font-bold' : ''}>
+                                            Valid until: {format(new Date(offer.validUntil), 'MMM dd, yyyy')}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-
-                            <h3 className="font-bold text-[#2C1810] text-lg mb-1">{offer.description}</h3>
-                            <p className="text-[#C97E45] font-bold text-2xl mb-4">
-                                {offer.discountType === 'percentage' ? `${offer.discountValue}% OFF` : `₹${offer.discountValue} OFF`}
-                            </p>
-
-                            <div className="space-y-2 text-sm text-slate-500">
-                                <div className="flex items-center">
-                                    <Tag size={14} className="mr-2" />
-                                    Min. Order: ₹{offer.minOrderValue}
-                                </div>
-                                <div className="flex items-center">
-                                    <Calendar size={14} className="mr-2" />
-                                    Valid until: {format(new Date(offer.validUntil), 'MMM dd, yyyy')}
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                 </div>
             )}
         </div>

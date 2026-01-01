@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ShoppingBag, Star, Clock, ArrowRight, Heart } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { Link } from 'react-router-dom';
+import AiBarista from '../../components/AiBarista';
 
 const CustomerDashboard = () => {
     const { addToCart } = useCart();
@@ -56,7 +57,10 @@ const CustomerDashboard = () => {
                 setLoading(false);
             }
         };
+
         fetchDashboardData();
+        window.addEventListener('countRefresh', fetchDashboardData);
+        return () => window.removeEventListener('countRefresh', fetchDashboardData);
     }, []);
 
     const recentOrders = orders.slice(0, 3);
@@ -66,9 +70,23 @@ const CustomerDashboard = () => {
             {/* Welcome Banner */}
             <div className="bg-gradient-to-r from-[#4A2C2A] to-[#2C1810] rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl">
                 <div className="relative z-10 max-w-xl">
-                    <h1 className="text-3xl font-bold font-[Outfit] mb-2">Welcome Back! ☕</h1>
-                    <p className="text-orange-200/80 mb-6">Your favorite Morning Roast is back in stock. Ready for another cup of perfection?</p>
-                    <Link to="/shop/all" className="bg-[#C97E45] hover:bg-[#b06d3a] px-6 py-3 rounded-xl font-bold transition-all inline-flex items-center shadow-lg">
+                    <h1 className="text-3xl font-bold font-[Outfit] mb-2 text-white drop-shadow-md">
+                        Hello, {(() => {
+                            try {
+                                const raw = localStorage.getItem('user');
+                                if (raw) {
+                                    const parsed = JSON.parse(raw);
+                                    const u = parsed.data || parsed;
+                                    return u.name ? u.name.split(' ')[0] : 'Coffee Lover';
+                                }
+                            } catch (e) { }
+                            return 'Coffee Lover';
+                        })()}! ☕
+                    </h1>
+                    <p className="text-orange-50 mb-6 font-medium drop-shadow-sm">
+                        Your favorite Morning Roast is back in stock. Ready for another cup of perfection?
+                    </p>
+                    <Link to="/customer/shop/all" className="bg-[#C97E45] hover:bg-[#b06d3a] text-white px-6 py-3 rounded-xl font-bold transition-all inline-flex items-center shadow-lg border border-white/20">
                         Order Again <ArrowRight size={18} className="ml-2" />
                     </Link>
                 </div>
@@ -137,31 +155,37 @@ const CustomerDashboard = () => {
                     )}
                 </div>
 
-                {/* Favorite Items / Recommendations */}
-                <div className="bg-white rounded-3xl p-8 shadow-sm border border-orange-100">
-                    <h3 className="text-xl font-bold text-[#4A2C2A] mb-6">Wishlist Favorites</h3>
-                    <div className="space-y-6">
-                        {wishlistItems.map((item) => (
-                            <div key={item._id} className="flex items-center space-x-4 group cursor-pointer">
-                                <div className="w-16 h-16 rounded-xl bg-orange-50 overflow-hidden">
-                                    <img src={item.image || null} alt={item.name} className="w-full h-full object-cover" />
+                {/* Right Column */}
+                <div className="space-y-8">
+                    {/* AI Barista Widget */}
+                    <AiBarista />
+
+                    {/* Favorite Items / Recommendations */}
+                    <div className="bg-white rounded-3xl p-8 shadow-sm border border-orange-100">
+                        <h3 className="text-xl font-bold text-[#4A2C2A] mb-6">Wishlist Favorites</h3>
+                        <div className="space-y-6">
+                            {wishlistItems.map((item) => (
+                                <div key={item._id} className="flex items-center space-x-4 group cursor-pointer">
+                                    <div className="w-16 h-16 rounded-xl bg-orange-50 overflow-hidden">
+                                        <img src={item.image || null} alt={item.name} className="w-full h-full object-cover" />
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-bold text-[#4A2C2A] text-sm group-hover:text-[#C97E45] transition-colors">{item.name}</h4>
+                                        <p className="text-xs text-[#6D5E57]">{item.category}</p>
+                                        <p className="text-sm font-bold text-[#C97E45] mt-1">₹{item.price}.00</p>
+                                    </div>
+                                    <button
+                                        onClick={() => addToCart(item)}
+                                        className="text-[#C97E45] hover:bg-orange-50 p-2 rounded-lg transition-colors border border-transparent hover:border-orange-100"
+                                    >
+                                        <ShoppingBag size={18} />
+                                    </button>
                                 </div>
-                                <div className="flex-1">
-                                    <h4 className="font-bold text-[#4A2C2A] text-sm group-hover:text-[#C97E45] transition-colors">{item.name}</h4>
-                                    <p className="text-xs text-[#6D5E57]">{item.category}</p>
-                                    <p className="text-sm font-bold text-[#C97E45] mt-1">₹{item.price}.00</p>
-                                </div>
-                                <button
-                                    onClick={() => addToCart(item)}
-                                    className="text-[#C97E45] hover:bg-orange-50 p-2 rounded-lg transition-colors border border-transparent hover:border-orange-100"
-                                >
-                                    <ShoppingBag size={18} />
-                                </button>
-                            </div>
-                        ))}
-                        <button className="w-full py-3 border-2 border-dashed border-orange-200 rounded-xl text-orange-400 font-medium hover:bg-orange-50 transition-all">
-                            + Discover More
-                        </button>
+                            ))}
+                            <button className="w-full py-3 border-2 border-dashed border-orange-200 rounded-xl text-orange-400 font-medium hover:bg-orange-50 transition-all">
+                                + Discover More
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

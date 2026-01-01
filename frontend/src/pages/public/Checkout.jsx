@@ -38,6 +38,11 @@ const Checkout = () => {
         paymentMethod: 'COD'
     });
 
+    const [savedAddresses, setSavedAddresses] = useState([]);
+    const [savedCards, setSavedCards] = useState([]);
+
+    const [errors, setErrors] = useState({});
+
     useEffect(() => {
         const rawUser = localStorage.getItem('user');
         if (rawUser) {
@@ -55,10 +60,6 @@ const Checkout = () => {
             }
         }
     }, []);
-
-    const [savedAddresses, setSavedAddresses] = useState([]);
-    const [savedCards, setSavedCards] = useState([]);
-    const [selectedCard, setSelectedCard] = useState(null);
 
     useEffect(() => {
         const fetchUserProfile = async () => {
@@ -88,19 +89,45 @@ const Checkout = () => {
         fetchUserProfile();
     }, []);
 
+    const validate = () => {
+        let tempErrors = {};
+        if (!formData.fullName?.trim()) tempErrors.fullName = "Full Name is required";
+        if (!formData.email?.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) tempErrors.email = "Invalid email format";
+        if (!formData.phone?.match(/^\d{10}$/)) tempErrors.phone = "Phone must be 10 digits";
+        if (!formData.address?.trim()) tempErrors.address = "Address is required";
+        if (!formData.city?.trim()) tempErrors.city = "City is required";
+        if (!formData.pincode?.match(/^\d{6}$/)) tempErrors.pincode = "Pincode must be 6 digits";
+
+        setErrors(tempErrors);
+
+        if (Object.keys(tempErrors).length > 0) {
+            const firstErrorField = document.querySelector(`[name="${Object.keys(tempErrors)[0]}"]`);
+            if (firstErrorField) {
+                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstErrorField.focus();
+            }
+        }
+
+        return Object.keys(tempErrors).length === 0;
+    };
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (errors[e.target.name]) {
+            setErrors({ ...errors, [e.target.name]: '' });
+        }
     };
 
     const fillAddress = (addr) => {
         setFormData({
             ...formData,
-            fullName: addr.fullName,
-            phone: addr.phone,
-            address: addr.address,
-            city: addr.city,
-            pincode: addr.pincode
+            fullName: addr.fullName || '',
+            phone: addr.phone || '',
+            address: addr.address || '',
+            city: addr.city || '',
+            pincode: addr.pincode || ''
         });
+        setErrors({});
     };
 
     const handleApplyPromo = async () => {
@@ -157,14 +184,10 @@ const Checkout = () => {
     const handleSubmit = async (e) => {
         try {
             e.preventDefault();
+            if (!validate()) return;
+
             setLoading(true);
             setError('');
-
-            if (!formData.address?.trim() || !formData.city?.trim() || !formData.pincode?.trim() || !formData.phone?.trim()) {
-                setError('Please fill in all shipping details.');
-                setLoading(false);
-                return;
-            }
 
             const rawUser = localStorage.getItem('user');
             const token = localStorage.getItem('token');
@@ -178,10 +201,10 @@ const Checkout = () => {
                 } catch (e) { console.error(e); }
             }
 
-            const validItems = cartItems.filter(item => {
+            const validItems = cartItems?.filter(item => {
                 const id = item._id || '';
                 return id.length === 24 && /^[0-9a-fA-F]+$/.test(id);
-            });
+            }) || [];
 
             if (validItems.length === 0) {
                 setError("Cart is empty or contains invalid items.");
@@ -206,7 +229,7 @@ const Checkout = () => {
                 },
                 paymentMethod: formData.paymentMethod,
                 totalPrice: finalTotal,
-                discount: discount,
+                discount: discount || 0,
                 promoCode: appliedOffer ? appliedOffer.code : undefined,
                 redeemedPoints: isRedeeming ? 100 : 0
             };
@@ -225,10 +248,14 @@ const Checkout = () => {
             if (response.ok) {
                 setOrderSuccess(true);
                 clearCart();
+                // Trigger updates for sidebar counts and notifications
+                window.dispatchEvent(new Event('countRefresh'));
+                window.dispatchEvent(new Event('notifRefresh'));
             } else {
                 setError(data.message || 'Failed to place order.');
             }
         } catch (err) {
+            console.error(err);
             setError('Something went wrong. Please try again.');
         } finally {
             setLoading(false);
@@ -310,39 +337,57 @@ const Checkout = () => {
                                     <span>Shipping Address</span>
                                 </div>
                                 <div className="space-y-4">
-                                    <input
-                                        type="text" name="fullName" placeholder="Full Name" required
-                                        value={formData.fullName} onChange={handleChange}
-                                        className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none"
-                                    />
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div>
                                         <input
-                                            type="email" name="email" placeholder="Email Address" required
-                                            value={formData.email} onChange={handleChange}
-                                            className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none"
+                                            type="text" name="fullName" placeholder="Full Name"
+                                            value={formData.fullName} onChange={handleChange}
+                                            className={`w-full px-5 py-4 bg-slate-50 border ${errors.fullName ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none`}
                                         />
-                                        <input
-                                            type="tel" name="phone" placeholder="Phone Number" required
-                                            value={formData.phone} onChange={handleChange}
-                                            className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none"
-                                        />
+                                        {errors.fullName && <p className="text-xs text-red-500 ml-2 mt-1">{errors.fullName}</p>}
                                     </div>
-                                    <textarea
-                                        name="address" placeholder="Full Delivery Address" required rows="3"
-                                        value={formData.address} onChange={handleChange}
-                                        className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none"
-                                    ></textarea>
                                     <div className="grid grid-cols-2 gap-4">
-                                        <input
-                                            type="text" name="city" placeholder="City" required
-                                            value={formData.city} onChange={handleChange}
-                                            className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none"
-                                        />
-                                        <input
-                                            type="text" name="pincode" placeholder="Pincode" required
-                                            value={formData.pincode} onChange={handleChange}
-                                            className="w-full px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none"
-                                        />
+                                        <div>
+                                            <input
+                                                type="email" name="email" placeholder="Email Address"
+                                                value={formData.email} onChange={handleChange}
+                                                className={`w-full px-5 py-4 bg-slate-50 border ${errors.email ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none`}
+                                            />
+                                            {errors.email && <p className="text-xs text-red-500 ml-2 mt-1">{errors.email}</p>}
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="tel" name="phone" placeholder="Phone Number"
+                                                value={formData.phone} onChange={handleChange}
+                                                className={`w-full px-5 py-4 bg-slate-50 border ${errors.phone ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none`}
+                                            />
+                                            {errors.phone && <p className="text-xs text-red-500 ml-2 mt-1">{errors.phone}</p>}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <textarea
+                                            name="address" placeholder="Full Delivery Address" rows="3"
+                                            value={formData.address} onChange={handleChange}
+                                            className={`w-full px-5 py-4 bg-slate-50 border ${errors.address ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none`}
+                                        ></textarea>
+                                        {errors.address && <p className="text-xs text-red-500 ml-2 mt-1">{errors.address}</p>}
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <input
+                                                type="text" name="city" placeholder="City"
+                                                value={formData.city} onChange={handleChange}
+                                                className={`w-full px-5 py-4 bg-slate-50 border ${errors.city ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none`}
+                                            />
+                                            {errors.city && <p className="text-xs text-red-500 ml-2 mt-1">{errors.city}</p>}
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="text" name="pincode" placeholder="Pincode"
+                                                value={formData.pincode} onChange={handleChange}
+                                                className={`w-full px-5 py-4 bg-slate-50 border ${errors.pincode ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] outline-none`}
+                                            />
+                                            {errors.pincode && <p className="text-xs text-red-500 ml-2 mt-1">{errors.pincode}</p>}
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -442,7 +487,7 @@ const Checkout = () => {
                                 <ShoppingBag className="text-[#C97E45]" /> Your Order
                             </h2>
                             <div className="space-y-6 mb-10 max-h-80 overflow-y-auto pr-4 relative z-10 scrollbar-hide">
-                                {cartItems.map((item) => (
+                                {cartItems?.map((item) => (
                                     <div key={item._id} className="flex gap-4">
                                         <div className="w-16 h-16 rounded-xl overflow-hidden bg-white/10 flex-shrink-0">
                                             <img src={item.image || null} alt={item.name} className="w-full h-full object-cover" />

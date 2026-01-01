@@ -7,15 +7,39 @@ const Login = () => {
     const location = useLocation();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [errors, setErrors] = useState({});
 
     const [formData, setFormData] = useState({ email: '', password: '' });
 
+    const validate = () => {
+        let tempErrors = {};
+        if (!formData.email) tempErrors.email = "Email is required";
+        if (!formData.password) tempErrors.password = "Password is required";
+
+        setErrors(tempErrors);
+
+        if (Object.keys(tempErrors).length > 0) {
+            const firstErrorField = document.querySelector(`[name="${Object.keys(tempErrors)[0]}"]`);
+            if (firstErrorField) {
+                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstErrorField.focus();
+            }
+        }
+
+        return Object.keys(tempErrors).length === 0;
+    };
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (errors[e.target.name]) {
+            setErrors({ ...errors, [e.target.name]: '' });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return;
+
         setLoading(true);
         setError('');
 
@@ -111,10 +135,10 @@ const Login = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                     placeholder="name@example.com"
-                                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]"
-                                    required
+                                    className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.email ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]`}
                                 />
                             </div>
+                            {errors.email && <p className="text-xs text-red-500 ml-1">{errors.email}</p>}
                         </div>
 
                         <div className="space-y-2">
@@ -130,10 +154,10 @@ const Login = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="••••••••"
-                                    className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]"
-                                    required
+                                    className={`w-full pl-12 pr-4 py-3.5 bg-slate-50 border ${errors.password ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]`}
                                 />
                             </div>
+                            {errors.password && <p className="text-xs text-red-500 ml-1">{errors.password}</p>}
                         </div>
 
                         <div className="flex items-center ml-1">

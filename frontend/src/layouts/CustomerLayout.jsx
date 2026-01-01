@@ -4,7 +4,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
     Home, ShoppingBag, ClipboardList, Bell, User,
     Heart, Ticket, MapPin, CreditCard, Gift, ShoppingCart,
-    ShieldCheck, LogOut, Menu, X, ChevronDown, Sparkles, TrendingUp
+    ShieldCheck, LogOut, Menu, X, ChevronDown, Sparkles, TrendingUp, Coffee
 } from 'lucide-react';
 
 const CustomerLayout = () => {
@@ -98,6 +98,7 @@ const CustomerLayout = () => {
 
     const menuItems = [
         { icon: Home, label: 'Home Feed', path: '/customer' },
+        { icon: Coffee, label: 'Brew Your Own', path: '/customer/brew-your-own', isNew: true },
 
         { icon: ShoppingBag, label: 'Shop Now', path: '/customer/shop' },
         { icon: Sparkles, label: 'New Arrivals', path: '/customer/new-arrivals' },
@@ -155,6 +156,11 @@ const CustomerLayout = () => {
                                             {item.count > 0 && (
                                                 <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[1.2rem] text-center">
                                                     {item.count}
+                                                </span>
+                                            )}
+                                            {item.isNew && (
+                                                <span className="bg-gradient-to-r from-orange-400 to-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm animate-pulse">
+                                                    NEW
                                                 </span>
                                             )}
                                         </Link>

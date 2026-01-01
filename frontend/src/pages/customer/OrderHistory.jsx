@@ -24,7 +24,9 @@ const OrderHistory = () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    setOrders(data);
+                    // Sort by createdAt descending (newest first)
+                    const sortedOrders = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    setOrders(sortedOrders);
                 } else {
                     setError(data.message || 'Failed to fetch orders');
                 }
@@ -163,9 +165,9 @@ const OrderHistory = () => {
                                         <Clock size={14} />
                                         <span>Status: {order.status === 'Pending' ? 'Arriving Soon' : order.status}</span>
                                     </div>
-                                    <button className="flex items-center text-[#C97E45] font-bold text-sm hover:translate-x-1 transition-transform">
+                                    <Link to={`/customer/orders/${order._id}`} className="flex items-center text-[#C97E45] font-bold text-sm hover:translate-x-1 transition-transform">
                                         View Details <ChevronRight size={16} />
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>

@@ -6,6 +6,7 @@ const Register = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [errors, setErrors] = useState({});
 
     const [formData, setFormData] = useState({
         name: '',
@@ -14,12 +15,37 @@ const Register = () => {
         password: '',
     });
 
+    const validate = () => {
+        let tempErrors = {};
+        if (!formData.name.trim()) tempErrors.name = "Name is required";
+        if (!formData.email.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/)) tempErrors.email = "Invalid email format";
+        if (!formData.phone.match(/^\d{10}$/)) tempErrors.phone = "Phone must be 10 digits";
+        if (formData.password.length < 6) tempErrors.password = "Password must be at least 6 characters";
+
+        setErrors(tempErrors);
+
+        if (Object.keys(tempErrors).length > 0) {
+            const firstErrorField = document.querySelector(`[name="${Object.keys(tempErrors)[0]}"]`);
+            if (firstErrorField) {
+                firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                firstErrorField.focus();
+            }
+        }
+
+        return Object.keys(tempErrors).length === 0;
+    };
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (errors[e.target.name]) {
+            setErrors({ ...errors, [e.target.name]: '' });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!validate()) return;
+
         setLoading(true);
         setError('');
         setSuccess('');
@@ -109,10 +135,10 @@ const Register = () => {
                                     value={formData.name}
                                     onChange={handleChange}
                                     placeholder="Sunil Verma"
-                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]"
-                                    required
+                                    className={`w-full pl-12 pr-4 py-3 bg-slate-50 border ${errors.name ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]`}
                                 />
                             </div>
+                            {errors.name && <p className="text-xs text-red-500 ml-1">{errors.name}</p>}
                         </div>
 
                         <div className="space-y-2">
@@ -125,10 +151,10 @@ const Register = () => {
                                     value={formData.email}
                                     onChange={handleChange}
                                     placeholder="sunil@example.com"
-                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]"
-                                    required
+                                    className={`w-full pl-12 pr-4 py-3 bg-slate-50 border ${errors.email ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]`}
                                 />
                             </div>
+                            {errors.email && <p className="text-xs text-red-500 ml-1">{errors.email}</p>}
                         </div>
 
                         <div className="space-y-2">
@@ -141,10 +167,10 @@ const Register = () => {
                                     value={formData.phone}
                                     onChange={handleChange}
                                     placeholder="+91 98765 43210"
-                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]"
-                                    required
+                                    className={`w-full pl-12 pr-4 py-3 bg-slate-50 border ${errors.phone ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]`}
                                 />
                             </div>
+                            {errors.phone && <p className="text-xs text-red-500 ml-1">{errors.phone}</p>}
                         </div>
 
                         <div className="space-y-2">
@@ -157,10 +183,10 @@ const Register = () => {
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="Minimum 8 characters"
-                                    className="w-full pl-12 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]"
-                                    required
+                                    className={`w-full pl-12 pr-4 py-3 bg-slate-50 border ${errors.password ? 'border-red-400' : 'border-slate-100'} rounded-2xl focus:ring-2 focus:ring-[#C97E45]/20 focus:border-[#C97E45] focus:bg-white transition-all outline-none text-[#2C1810]`}
                                 />
                             </div>
+                            {errors.password && <p className="text-xs text-red-500 ml-1">{errors.password}</p>}
                         </div>
 
                         <div className="flex items-start ml-1 py-1">

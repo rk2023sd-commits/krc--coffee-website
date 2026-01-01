@@ -75,9 +75,19 @@ const Offers = () => {
                     {offers.map((offer, index) => {
                         const style = getStyles(index);
                         const Icon = getIcon(offer.discountType);
+                        const isUsed = offer.isUsed;
+
                         return (
-                            <div key={offer._id} className={`${style.bg} border-2 border-dashed border-gray-200 rounded-2xl p-6 relative group transition-all hover:-translate-y-1 hover:shadow-lg`}>
-                                <div className={`w-12 h-12 rounded-full ${style.color} text-white flex items-center justify-center mb-4 shadow-md`}>
+                            <div key={offer._id} className={`${isUsed ? 'bg-slate-100 grayscale opacity-70' : style.bg} border-2 border-dashed border-gray-200 rounded-2xl p-6 relative group transition-all ${!isUsed && 'hover:-translate-y-1 hover:shadow-lg'}`}>
+                                {isUsed && (
+                                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/50 backdrop-blur-[1px] rounded-2xl">
+                                        <span className="bg-slate-800 text-white font-bold px-4 py-2 rounded-full transform -rotate-12 shadow-xl">
+                                            ALREADY REDEEMED
+                                        </span>
+                                    </div>
+                                )}
+
+                                <div className={`w-12 h-12 rounded-full ${isUsed ? 'bg-slate-400' : style.color} text-white flex items-center justify-center mb-4 shadow-md`}>
                                     <Icon size={24} />
                                 </div>
 
@@ -91,9 +101,10 @@ const Offers = () => {
                                         {offer.code}
                                     </div>
                                     <button
-                                        onClick={() => copyToClipboard(offer.code)}
-                                        className={`p-2 hover:bg-gray-50 rounded-lg transition-colors text-slate-400 hover:${style.text} relative`}
-                                        title="Copy Code"
+                                        onClick={() => !isUsed && copyToClipboard(offer.code)}
+                                        disabled={isUsed}
+                                        className={`p-2 hover:bg-gray-50 rounded-lg transition-colors text-slate-400 ${!isUsed && `hover:${style.text}`} relative`}
+                                        title={isUsed ? "Code Already Used" : "Copy Code"}
                                     >
                                         {copiedCode === offer.code ? (
                                             <CheckCircle2 size={20} className="text-green-500" />
@@ -105,7 +116,7 @@ const Offers = () => {
 
                                 <div className="mt-4 flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
                                     <Clock size={14} />
-                                    <span>Valid till {new Date(offer.validUntil).toLocaleDateString()}</span>
+                                    <span>{isUsed ? 'Coupon Used' : `Valid till ${new Date(offer.validUntil).toLocaleDateString()}`}</span>
                                 </div>
                             </div>
                         );

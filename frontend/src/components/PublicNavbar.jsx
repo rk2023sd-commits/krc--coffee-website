@@ -41,6 +41,7 @@ const PublicNavbar = () => {
                 <Link to="/shop/cold-coffee" className="block px-4 py-2 hover:bg-orange-50 text-[#2C1810] transition-colors">Cold Coffee</Link>
                 <Link to="/shop/snacks" className="block px-4 py-2 hover:bg-orange-50 text-[#2C1810] transition-colors">Snacks</Link>
                 <Link to="/shop/combos" className="block px-4 py-2 hover:bg-orange-50 text-[#2C1810] transition-colors">Combos</Link>
+                <Link to="/brew-your-own" className="block px-4 py-2 hover:bg-orange-50 text-[#C97E45] font-bold transition-colors">✨ Brew Your Own</Link>
                 <Link to="/shop/gift-packs" className="block px-4 py-2 hover:bg-orange-50 text-[#2C1810] transition-colors">Gift Packs</Link>
                 <Link to="/shop/all" className="block px-4 py-2 hover:bg-orange-50 text-[#2C1810] font-semibold border-t mt-1 pt-2 transition-colors">All Products</Link>
               </div>

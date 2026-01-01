@@ -1,12 +1,12 @@
 const express = require('express');
 const { getOffers, createOffer, deleteOffer, toggleOfferStatus } = require('../controllers/offerController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, optionalProtect } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Public: View offers
+// Public: View offers (with optional auth for used check)
 router.route('/')
-    .get(getOffers)
+    .get(optionalProtect, getOffers)
     .post(protect, createOffer);
 
 router.route('/:id')

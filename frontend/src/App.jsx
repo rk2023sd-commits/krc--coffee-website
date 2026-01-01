@@ -22,12 +22,14 @@ import BlogList from './pages/public/BlogList';
 import BlogPost from './pages/public/BlogPost';
 import ForgotPassword from './pages/public/ForgotPassword';
 import ResetPassword from './pages/public/ResetPassword';
+import BrewYourOwn from './pages/public/BrewYourOwn';
 
 // Customer Pages
 import Addresses from './pages/customer/Addresses';
 import CustomerDashboard from './pages/customer/CustomerDashboard';
 import CustomerHome from './pages/customer/CustomerHome';
 import OrderHistory from './pages/customer/OrderHistory';
+import CustomerOrderDetails from './pages/customer/OrderDetails';
 
 import CustomerOffers from './pages/customer/Offers';
 import CustomerWishlist from './pages/customer/Wishlist';
@@ -96,6 +98,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="forgot-password" element={<ForgotPassword />} />
           <Route path="reset-password/:token" element={<ResetPassword />} />
+          <Route path="brew-your-own" element={<BrewYourOwn />} />
         </Route>
 
         {/* Customer Routes */}
@@ -104,13 +107,16 @@ function App() {
           <Route path="home" element={<CustomerHome />} />
           <Route path="dashboard" element={<CustomerDashboard />} />
           <Route path="orders" element={<OrderHistory />} />
+          <Route path="orders/:id" element={<CustomerOrderDetails />} />
 
           <Route path="cart" element={<Cart />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="addresses" element={<Addresses />} />
           <Route path="payments" element={<Payments />} />
           <Route path="rewards" element={<Rewards />} />
+          <Route path="rewards" element={<Rewards />} />
           <Route path="security" element={<Security />} />
+          <Route path="brew-your-own" element={<BrewYourOwn />} />
 
 
           <Route path="shop" element={<Shop />} />

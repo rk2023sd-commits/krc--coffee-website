@@ -9,7 +9,8 @@ import {
     ArrowRight,
     Star,
     CupSoda,
-    LayoutDashboard
+    LayoutDashboard,
+    Coffee
 } from 'lucide-react';
 
 const CustomerHome = () => {
@@ -50,6 +51,7 @@ const CustomerHome = () => {
 
     const features = [
         { title: 'Shop Now', icon: <CupSoda />, link: '/customer/shop', color: 'bg-orange-500', desc: 'Browse our latest coffee blends' },
+        { title: 'Brew Your Own', icon: <Coffee />, link: '/customer/brew-your-own', color: 'bg-[#4A2C2A]', desc: 'Be your own barista' },
         { title: 'Rewards', icon: <Trophy />, link: '/customer/rewards', color: 'bg-yellow-500', desc: `${rewardPoints} Points available` },
         { title: 'Payments', icon: <Wallet />, link: '/customer/payments', color: 'bg-blue-500', desc: 'Manage your saved cards' },
         { title: 'Addresses', icon: <MapPin />, link: '/customer/addresses', color: 'bg-green-500', desc: 'Manage delivery locations' },
@@ -71,10 +73,10 @@ const CustomerHome = () => {
             <div className="relative rounded-[3rem] overflow-hidden bg-[#4A2C2A] text-white p-12 min-h-[400px] flex items-center">
                 <div className="relative z-10 max-w-2xl">
                     <span className="inline-block px-4 py-1 rounded-full bg-white/10 text-orange-200 text-xs font-bold uppercase tracking-widest mb-6">Premium Member</span>
-                    <h1 className="text-5xl font-bold font-[Outfit] leading-tight mb-4">
+                    <h1 className="text-5xl font-bold font-[Outfit] leading-tight mb-4 text-white drop-shadow-md">
                         Hello, {user?.name?.split(' ')[0] || 'Coffee Lover'}!
                     </h1>
-                    <p className="text-xl text-orange-100/70 mb-8 leading-relaxed">
+                    <p className="text-xl text-orange-100 mb-8 leading-relaxed font-medium drop-shadow-sm">
                         Ready for your daily dose of perfection? We've roasted a fresh batch of Arabica just for you.
                     </p>
                     <div className="flex flex-wrap gap-4">

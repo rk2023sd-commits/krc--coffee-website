@@ -6,17 +6,23 @@ const Offer = require('../models/Offer');
 // @access  Private/Admin
 exports.getOffers = async (req, res) => {
     try {
-        let query = {};
+        // Fetch all active offers
+        // We use lean() to get plain objects so we can attach properties
+        const offers = await Offer.find({}).sort('-createdAt').lean();
 
-        // If not admin, hide used coupons
+        // If user is logged in (and not admin), check which ones are used
         if (req.user && req.user.role !== 'admin') {
             const user = await User.findById(req.user.id);
-            if (user && user.usedCoupons && user.usedCoupons.length > 0) {
-                query = { _id: { $nin: user.usedCoupons } };
+            if (user && user.usedCoupons) {
+                offers.forEach(offer => {
+                    // Check if offer ID is in user's usedCoupons
+                    if (user.usedCoupons.some(id => id.toString() === offer._id.toString())) {
+                        offer.isUsed = true; // Attach flag
+                    }
+                });
             }
         }
 
-        const offers = await Offer.find(query).sort('-createdAt');
         res.status(200).json({ success: true, data: offers });
     } catch (error) {
         console.error(error);
