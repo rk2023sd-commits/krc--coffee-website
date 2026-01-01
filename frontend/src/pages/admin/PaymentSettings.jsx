@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Save, RefreshCw, CreditCard } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const PaymentSettings = () => {
     const [settings, setSettings] = useState({
@@ -7,6 +8,9 @@ const PaymentSettings = () => {
         enableStripe: false,
         stripePublicKey: '',
         stripeSecretKey: '',
+        enableRazorpay: false,
+        razorpayKeyId: '',
+        razorpayKeySecret: '',
         currency: 'INR'
     });
     const [loading, setLoading] = useState(true);
@@ -19,15 +23,17 @@ const PaymentSettings = () => {
     const fetchSettings = async () => {
         setLoading(true);
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch('http://localhost:5000/api/settings/payment', {
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
             if (data.success && data.data) {
-                setSettings({ ...settings, ...data.data });
+                setSettings(prev => ({ ...prev, ...data.data }));
             }
         } catch (err) {
             console.error('Failed to fetch payment settings');
+            toast.error("Failed to load settings");
         } finally {
             setLoading(false);
         }
@@ -36,19 +42,23 @@ const PaymentSettings = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
+            const token = localStorage.getItem('token');
             const res = await fetch('http://localhost:5000/api/settings/payment', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(settings)
             });
+            const data = await res.json();
             if (res.ok) {
-                alert('Payment Settings Saved');
+                toast.success('Payment Settings Saved Successfully');
+            } else {
+                toast.error(data.message || 'Failed to save settings');
             }
         } catch (err) {
-            alert('Failed to save');
+            toast.error('Something went wrong');
         } finally {
             setSaving(false);
         }
@@ -136,6 +146,51 @@ const PaymentSettings = () => {
                                             value={settings.stripeSecretKey}
                                             onChange={(e) => setSettings({ ...settings, stripeSecretKey: e.target.value })}
                                             placeholder="sk_test_..."
+                                        />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="border-t border-slate-100 my-6"></div>
+
+                    {/* Razorpay Section */}
+                    <div>
+                        <h3 className="font-bold text-lg text-[#2C1810] mb-4 flex items-center">
+                            <CreditCard className="mr-2 text-[#C97E45]" size={20} /> Razorpay Integration
+                        </h3>
+                        <div className="space-y-4">
+                            <label className="flex items-center space-x-3 cursor-pointer mb-4">
+                                <input
+                                    type="checkbox"
+                                    checked={settings.enableRazorpay}
+                                    onChange={(e) => setSettings({ ...settings, enableRazorpay: e.target.checked })}
+                                    className="w-5 h-5 text-[#C97E45] rounded focus:ring-[#C97E45]"
+                                />
+                                <span className="text-slate-700 font-medium">Enable Razorpay Payments</span>
+                            </label>
+
+                            {settings.enableRazorpay && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50 p-6 rounded-xl border border-slate-100">
+                                    <div className="col-span-1">
+                                        <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Key ID</label>
+                                        <input
+                                            type="text"
+                                            className="w-full p-4 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none font-mono text-sm"
+                                            value={settings.razorpayKeyId}
+                                            onChange={(e) => setSettings({ ...settings, razorpayKeyId: e.target.value })}
+                                            placeholder="rzp_test_..."
+                                        />
+                                    </div>
+                                    <div className="col-span-1">
+                                        <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Key Secret</label>
+                                        <input
+                                            type="password"
+                                            className="w-full p-4 bg-white border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none font-mono text-sm"
+                                            value={settings.razorpayKeySecret}
+                                            onChange={(e) => setSettings({ ...settings, razorpayKeySecret: e.target.value })}
+                                            placeholder="secret"
                                         />
                                     </div>
                                 </div>

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import toast from 'react-hot-toast';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -36,7 +37,7 @@ const ProductDetails = () => {
                 setReviews(data.data);
             }
         } catch (e) {
-            console.error("Failed to fetch reviews");
+            console.error("Failed to fetch reviews", e);
         }
     };
 
@@ -69,6 +70,19 @@ const ProductDetails = () => {
         setTimeout(() => setAdded(false), 2000);
     };
 
+    const handleBuyNow = () => {
+        if (!product) return;
+        const token = localStorage.getItem('token');
+
+        if (!token || token === 'undefined' || token === 'null') {
+            toast.error("Please login to proceed to checkout");
+            navigate('/login', { state: { from: '/checkout', buyNowItem: { ...product, quantity } } });
+        } else {
+            // Navigate immediately to checkout
+            navigate(isCustomer ? '/customer/checkout' : '/checkout', { state: { buyNowItem: { ...product, quantity } } });
+        }
+    };
+
     const handleReviewSubmit = async (e) => {
         e.preventDefault();
         setSubmittingReview(true);
@@ -97,6 +111,7 @@ const ProductDetails = () => {
                 setReviewError(data.message || 'Failed to submit review');
             }
         } catch (err) {
+            console.error(err);
             setReviewError('Something went wrong');
         } finally {
             setSubmittingReview(false);
@@ -179,30 +194,38 @@ const ProductDetails = () => {
                             </div>
 
                             {/* Quantity & Actions */}
-                            <div className="flex flex-col sm:flex-row gap-6 mb-10">
-                                <div className="flex items-center bg-[#F8F5F2] rounded-2xl p-1 w-fit">
+                            <div className="flex flex-col gap-6 mb-10">
+                                <div className="flex flex-col sm:flex-row gap-6">
+                                    <div className="flex items-center bg-[#F8F5F2] rounded-2xl p-1 w-fit">
+                                        <button
+                                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                            className="p-3 hover:bg-white rounded-xl transition-all shadow-sm text-[#4A2C2A]"
+                                        >
+                                            <Minus size={20} />
+                                        </button>
+                                        <span className="w-12 text-center font-bold text-lg text-[#2C1810]">{quantity}</span>
+                                        <button
+                                            onClick={() => setQuantity(quantity + 1)}
+                                            className="p-3 hover:bg-white rounded-xl transition-all shadow-sm text-[#4A2C2A]"
+                                        >
+                                            <Plus size={20} />
+                                        </button>
+                                    </div>
+
                                     <button
-                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        className="p-3 hover:bg-white rounded-xl transition-all shadow-sm text-[#4A2C2A]"
+                                        onClick={handleAddToCart}
+                                        className={`flex-1 flex items-center justify-center space-x-3 py-4 px-8 rounded-2xl font-bold text-lg shadow-xl shadow-[#4A2C2A]/20 transition-all transform hover:-translate-y-1 ${added ? 'bg-green-600 text-white' : 'bg-[#4A2C2A] text-white hover:bg-[#2C1810]'
+                                            }`}
                                     >
-                                        <Minus size={20} />
-                                    </button>
-                                    <span className="w-12 text-center font-bold text-lg text-[#2C1810]">{quantity}</span>
-                                    <button
-                                        onClick={() => setQuantity(quantity + 1)}
-                                        className="p-3 hover:bg-white rounded-xl transition-all shadow-sm text-[#4A2C2A]"
-                                    >
-                                        <Plus size={20} />
+                                        {added ? <CheckCircle2 size={24} /> : <ShoppingBag size={24} />}
+                                        <span>{added ? 'Added to Cart' : 'Add to Cart'}</span>
                                     </button>
                                 </div>
-
                                 <button
-                                    onClick={handleAddToCart}
-                                    className={`flex-1 flex items-center justify-center space-x-3 py-4 px-8 rounded-2xl font-bold text-lg shadow-xl shadow-[#4A2C2A]/20 transition-all transform hover:-translate-y-1 ${added ? 'bg-green-600 text-white' : 'bg-[#4A2C2A] text-white hover:bg-[#2C1810]'
-                                        }`}
+                                    onClick={handleBuyNow}
+                                    className="w-full py-4 rounded-2xl bg-[#2C1810] text-white font-bold text-lg shadow-xl hover:bg-[#C97E45] transition-all"
                                 >
-                                    {added ? <CheckCircle2 size={24} /> : <ShoppingBag size={24} />}
-                                    <span>{added ? 'Added to Cart' : 'Add to Cart'}</span>
+                                    Buy Now
                                 </button>
                             </div>
 

@@ -6,8 +6,11 @@ const {
     getMyOrders,
     getOrders,
     updateOrderToDelivered,
-    updateOrderStatus
+    updateOrderStatus,
+    createRazorpayOrder
 } = require('../controllers/orderController');
+
+router.route('/razorpay').post(createRazorpayOrder);
 
 router.route('/')
     .post(addOrderItems)

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Save, RefreshCw, Truck } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const TaxDeliverySettings = () => {
     const [settings, setSettings] = useState({
-        taxRate: 0,
-        shippingFee: 0,
-        freeShippingThreshold: 0
+        taxRate: '',
+        shippingFee: '',
+        freeShippingThreshold: ''
     });
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -31,6 +32,7 @@ const TaxDeliverySettings = () => {
             }
         } catch (err) {
             console.error('Failed to fetch tax settings');
+            toast.error('Failed to fetch settings');
         } finally {
             setLoading(false);
         }
@@ -39,22 +41,38 @@ const TaxDeliverySettings = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
+            const payload = {
+                taxRate: parseFloat(settings.taxRate) || 0,
+                shippingFee: parseFloat(settings.shippingFee) || 0,
+                freeShippingThreshold: parseFloat(settings.freeShippingThreshold) || 0
+            };
+
             const res = await fetch('http://localhost:5000/api/settings/tax', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 },
-                body: JSON.stringify(settings)
+                body: JSON.stringify(payload)
             });
             if (res.ok) {
-                alert('Tax & Delivery Settings Saved');
+                toast.success('Tax & Delivery settings updated');
+            } else {
+                toast.error('Failed to save settings');
             }
         } catch (err) {
-            alert('Failed to save');
+            toast.error('Something went wrong');
         } finally {
             setSaving(false);
         }
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setSettings(prev => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
     return (
@@ -79,9 +97,11 @@ const TaxDeliverySettings = () => {
                             <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Global Tax Rate (%)</label>
                             <input
                                 type="number"
+                                name="taxRate"
                                 className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none"
                                 value={settings.taxRate}
-                                onChange={(e) => setSettings({ ...settings, taxRate: parseFloat(e.target.value) })}
+                                onChange={handleChange}
+                                placeholder="0"
                             />
                             <p className="text-xs text-slate-500 mt-2">This percentage will be applied to the order subtotal.</p>
                         </div>
@@ -96,18 +116,22 @@ const TaxDeliverySettings = () => {
                                 <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Standard Shipping Fee (₹)</label>
                                 <input
                                     type="number"
+                                    name="shippingFee"
                                     className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none"
                                     value={settings.shippingFee}
-                                    onChange={(e) => setSettings({ ...settings, shippingFee: parseFloat(e.target.value) })}
+                                    onChange={handleChange}
+                                    placeholder="0"
                                 />
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-[#4A2C2A] mb-2">Free Shipping Threshold (₹)</label>
                                 <input
                                     type="number"
+                                    name="freeShippingThreshold"
                                     className="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#C97E45]/20 outline-none"
                                     value={settings.freeShippingThreshold}
-                                    onChange={(e) => setSettings({ ...settings, freeShippingThreshold: parseFloat(e.target.value) })}
+                                    onChange={handleChange}
+                                    placeholder="0"
                                 />
                                 <p className="text-xs text-slate-500 mt-2">Orders above this amount will get free shipping.</p>
                             </div>

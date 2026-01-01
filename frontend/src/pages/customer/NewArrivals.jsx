@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Heart, Star, Loader2, Coffee, CheckCircle2, Sparkles } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const NewArrivals = () => {
     const { addToCart } = useCart();
@@ -11,10 +11,25 @@ const NewArrivals = () => {
     const [loading, setLoading] = useState(true);
     const [addedId, setAddedId] = useState(null);
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
     const handleAddToCart = (product) => {
         addToCart(product);
         setAddedId(product._id);
         setTimeout(() => setAddedId(null), 2000);
+    };
+
+    const handleBuyNow = (product) => {
+        const token = localStorage.getItem('token');
+        // addToCart(product);
+
+        if (!token || token === 'undefined' || token === 'null') {
+            toast.error("Please login to proceed to checkout");
+            navigate('/login', { state: { from: '/customer/checkout', buyNowItem: { ...product, quantity: 1 } } });
+        } else {
+            navigate('/customer/checkout', { state: { buyNowItem: { ...product, quantity: 1 } } });
+        }
     };
 
     useEffect(() => {
@@ -48,7 +63,7 @@ const NewArrivals = () => {
                         <Sparkles className="text-amber-400" />
                         <span className="text-amber-400 font-bold uppercase tracking-widest text-sm">Just Landed</span>
                     </div>
-                    <h1 className="text-4xl font-bold font-[Outfit] mb-4">New Arrivals</h1>
+                    <h1 className="text-4xl text-white font-bold font-[Outfit] mb-4">New Arrivals</h1>
                     <p className="text-orange-100/80">Discover our latest coffee blends, freshly roasted and ready to brew. Be the first to taste perfection.</p>
                 </div>
                 <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-white/5 to-transparent"></div>
@@ -66,8 +81,8 @@ const NewArrivals = () => {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                     {products.map((product) => (
-                        <div key={product._id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-orange-50 group">
-                            <div className="h-64 bg-slate-50 relative overflow-hidden">
+                        <div key={product._id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-orange-50 group flex flex-col">
+                            <div className="h-64 bg-slate-50 relative overflow-hidden flex-shrink-0">
                                 <img
                                     src={product.image || null}
                                     alt={product.name}
@@ -83,7 +98,7 @@ const NewArrivals = () => {
                                     <Heart size={18} className={isInWishlist(product._id) ? "fill-red-500 text-red-500" : ""} />
                                 </button>
                             </div>
-                            <div className="p-6">
+                            <div className="p-6 flex flex-col flex-grow">
                                 <div className="flex justify-between items-start mb-2">
                                     <span className="text-[10px] font-bold text-[#C97E45] uppercase tracking-widest">{product.category}</span>
                                     <div className="flex items-center text-amber-500">
@@ -92,13 +107,22 @@ const NewArrivals = () => {
                                     </div>
                                 </div>
                                 <h3 className="text-lg font-bold text-[#2C1810] mb-2 font-[Outfit] group-hover:text-[#C97E45] transition-colors line-clamp-1">{product.name}</h3>
-                                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
-                                    <span className="text-xl font-bold text-[#2C1810]">₹{product.price}</span>
+                                <div className="flex flex-col gap-3 mt-auto pt-4 border-t border-slate-50">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-xl font-bold text-[#2C1810]">₹{product.price}</span>
+                                        <button
+                                            onClick={() => handleAddToCart(product)}
+                                            className={`flex items-center space-x-2 px-3 py-2 rounded-xl shadow-lg transition-all ${addedId === product._id ? 'bg-green-600 text-white' : 'bg-[#4A2C2A] text-white hover:bg-[#2C1810]'}`}
+                                            title="Add to Cart"
+                                        >
+                                            {addedId === product._id ? <CheckCircle2 size={16} /> : <ShoppingCart size={16} />}
+                                        </button>
+                                    </div>
                                     <button
-                                        onClick={() => handleAddToCart(product)}
-                                        className={`flex items-center space-x-2 px-4 py-2 rounded-xl shadow-lg transition-all ${addedId === product._id ? 'bg-green-600 text-white' : 'bg-[#4A2C2A] text-white hover:bg-[#2C1810]'}`}
+                                        onClick={() => handleBuyNow(product)}
+                                        className="w-full py-2.5 rounded-xl bg-[#4A2C2A] text-white font-bold text-sm hover:bg-[#C97E45] transition-colors shadow-lg"
                                     >
-                                        {addedId === product._id ? <CheckCircle2 size={16} /> : <ShoppingCart size={16} />}
+                                        Buy Now
                                     </button>
                                 </div>
                             </div>

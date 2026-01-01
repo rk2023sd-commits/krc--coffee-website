@@ -65,12 +65,17 @@ const Login = () => {
                 } else {
                     let target = '/customer/dashboard';
                     if (location.state?.from) {
-                        // Handle both string path and object with pathname
                         target = typeof location.state.from === 'string'
                             ? location.state.from
                             : (location.state.from.pathname || '/customer/dashboard');
+
+                        // Fix: If coming from public checkout link, redirect to customer checkout inside dashboard
+                        if (target === '/checkout') {
+                            target = '/customer/checkout';
+                        }
                     }
-                    navigate(target, { replace: true });
+                    // Pass the existing state (which contains buyNowItem) to the target
+                    navigate(target, { replace: true, state: location.state });
                 }
             } else {
                 setError(data.message || 'Login failed');

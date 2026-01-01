@@ -4,12 +4,13 @@ import {
     CupSoda, Crown, ShoppingBag, RotateCcw, Sparkles
 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const BrewYourOwn = () => {
     const { addToCart } = useCart();
     const navigate = useNavigate();
+    const location = useLocation();
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
 
@@ -67,6 +68,13 @@ const BrewYourOwn = () => {
     };
 
     const handleAddToCart = async () => {
+        const token = localStorage.getItem('token');
+        if (!token || token === 'undefined' || token === 'null') {
+            toast.error("Please login to create your custom brew");
+            navigate('/login', { state: { from: location.pathname } });
+            return;
+        }
+
         setLoading(true);
         try {
             // Find a real product from DB to link this order to

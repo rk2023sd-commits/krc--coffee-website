@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Heart, Star, Filter, Loader2, Coffee, Search, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import toast from 'react-hot-toast';
 
 const Shop = () => {
     const { category } = useParams();
@@ -12,6 +13,12 @@ const Shop = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [addedId, setAddedId] = useState(null);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const isCustomer = location.pathname.startsWith('/customer');
+    const productBase = isCustomer ? '/customer/product' : '/product';
+    const shopBase = isCustomer ? '/customer/shop/all' : '/shop/all';
 
     const handleAddToCart = (product) => {
         addToCart(product);
@@ -19,10 +26,20 @@ const Shop = () => {
         setTimeout(() => setAddedId(null), 2000);
     };
 
-    const location = useLocation();
-    const isCustomer = location.pathname.startsWith('/customer');
-    const productBase = isCustomer ? '/customer/product' : '/product';
-    const shopBase = isCustomer ? '/customer/shop/all' : '/shop/all';
+    const handleBuyNow = (product) => {
+        const token = localStorage.getItem('token');
+        // Do NOT add to cart for direct buy now
+        // addToCart(product); 
+
+        // Robust check for token existence
+        if (!token || token === 'undefined' || token === 'null') {
+            toast.error("Please login to proceed to checkout");
+            // Pass the item in state so Login can forward it
+            navigate('/login', { state: { from: '/checkout', buyNowItem: { ...product, quantity: 1 } } });
+        } else {
+            navigate(isCustomer ? '/customer/checkout' : '/checkout', { state: { buyNowItem: { ...product, quantity: 1 } } });
+        }
+    };
 
     // Standard search params handling in useEffect below
 
@@ -60,7 +77,7 @@ const Shop = () => {
             }
         };
         fetchProducts();
-    }, [category, useLocation().search]);
+    }, [category, location.search]);
 
     const filteredBySearch = products.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -118,8 +135,8 @@ const Shop = () => {
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                         {filteredBySearch.map((product) => (
-                            <div key={product._id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 group">
-                                <div className="h-72 bg-slate-50 relative overflow-hidden">
+                            <div key={product._id} className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 group flex flex-col">
+                                <div className="h-72 bg-slate-50 relative overflow-hidden flex-shrink-0">
                                     <Link to={`${productBase}/${product._id}`} className="block w-full h-full">
                                         <img
                                             src={product.image || null}
@@ -141,7 +158,7 @@ const Shop = () => {
                                         </div>
                                     )}
                                 </div>
-                                <div className="p-6">
+                                <div className="p-6 flex flex-col flex-grow">
                                     <div className="flex justify-between items-start mb-2">
                                         <span className="text-[10px] font-bold text-[#C97E45] uppercase tracking-widest">{product.category}</span>
                                         <div className="flex items-center text-amber-500">
@@ -152,20 +169,28 @@ const Shop = () => {
                                     <Link to={`${productBase}/${product._id}`}>
                                         <h3 className="text-xl font-bold text-[#2C1810] mb-2 font-[Outfit] group-hover:text-[#C97E45] transition-colors">{product.name}</h3>
                                     </Link>
-                                    <p className="text-sm text-[#6D5E57] line-clamp-2 mb-6">
+                                    <p className="text-sm text-[#6D5E57] line-clamp-2 mb-6 flex-grow">
                                         {product.description}
                                     </p>
-                                    <div className="flex items-center justify-between pt-4 border-t border-slate-50">
-                                        <div>
-                                            <span className="text-xs text-slate-400 block mb-0.5 font-medium">Price</span>
-                                            <span className="text-2xl font-bold text-[#2C1810]">₹{product.price}</span>
+                                    <div className="flex flex-col gap-3 pt-4 border-t border-slate-50 mt-auto">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <span className="text-xs text-slate-400 block mb-0.5 font-medium">Price</span>
+                                                <span className="text-2xl font-bold text-[#2C1810]">₹{product.price}</span>
+                                            </div>
+                                            <button
+                                                onClick={() => handleAddToCart(product)}
+                                                className={`p-3 rounded-xl shadow-md transition-all ${addedId === product._id ? 'bg-green-600 text-white' : 'bg-slate-100 text-[#2C1810] hover:bg-[#2C1810] hover:text-white'}`}
+                                                title="Add to Cart"
+                                            >
+                                                {addedId === product._id ? <CheckCircle2 size={20} /> : <ShoppingCart size={20} />}
+                                            </button>
                                         </div>
                                         <button
-                                            onClick={() => handleAddToCart(product)}
-                                            className={`flex items-center space-x-2 px-5 py-3 rounded-2xl shadow-lg transition-all group-hover:translate-y-[-2px] ${addedId === product._id ? 'bg-green-600 text-white' : 'bg-[#4A2C2A] text-white hover:bg-[#2C1810] shadow-[#4A2C2A]/20'}`}
+                                            onClick={() => handleBuyNow(product)}
+                                            className="w-full py-3 rounded-xl bg-[#4A2C2A] text-white font-bold text-sm hover:bg-[#C97E45] transition-colors shadow-lg"
                                         >
-                                            {addedId === product._id ? <CheckCircle2 size={18} /> : <ShoppingCart size={18} />}
-                                            <span className="font-bold text-sm">{addedId === product._id ? 'Added' : 'Add'}</span>
+                                            Buy Now
                                         </button>
                                     </div>
                                 </div>

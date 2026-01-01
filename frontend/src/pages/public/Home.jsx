@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Coffee, Heart, Award, Sparkles, Loader2, ShoppingCart, CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
+import toast from 'react-hot-toast';
 
 const Home = () => {
     const { addToCart } = useCart();
@@ -10,11 +11,26 @@ const Home = () => {
     const [bestSellers, setBestSellers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [addedId, setAddedId] = useState(null);
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const handleAddToCart = (product) => {
         addToCart(product);
         setAddedId(product._id);
         setTimeout(() => setAddedId(null), 2000);
+    };
+
+    const handleBuyNow = (product) => {
+        const token = localStorage.getItem('token');
+        // addToCart(product); // Skip cart add for Buy Now
+
+        if (!token || token === 'undefined' || token === 'null') {
+            toast.error("Please login to proceed to checkout");
+            navigate('/login', { state: { from: '/checkout', buyNowItem: { ...product, quantity: 1 } } });
+        } else {
+            const isCustomer = location.pathname.startsWith('/customer');
+            navigate(isCustomer ? '/customer/checkout' : '/checkout', { state: { buyNowItem: { ...product, quantity: 1 } } });
+        }
     };
 
     useEffect(() => {
@@ -110,8 +126,8 @@ const Home = () => {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             {bestSellers.map((product) => (
-                                <div key={product._id} className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all overflow-hidden group border border-[#eee]">
-                                    <div className="h-64 bg-[#F9F9F9] relative overflow-hidden">
+                                <div key={product._id} className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all overflow-hidden group border border-[#eee] flex flex-col">
+                                    <div className="h-64 bg-[#F9F9F9] relative overflow-hidden flex-shrink-0">
                                         <Link to={`/product/${product._id}`} className="block w-full h-full">
                                             <img
                                                 src={product.image || null}
@@ -126,19 +142,27 @@ const Home = () => {
                                             <Heart size={18} className={isInWishlist(product._id) ? "fill-red-500 text-red-500" : ""} />
                                         </button>
                                     </div>
-                                    <div className="p-6">
+                                    <div className="p-6 flex flex-col flex-grow">
                                         <p className="text-[#C97E45] text-xs font-bold tracking-wider mb-2 uppercase">{product.category}</p>
                                         <Link to={`/product/${product._id}`}>
                                             <h3 className="text-lg font-bold mb-2 font-[Outfit] group-hover:text-[#C97E45] transition-colors truncate">{product.name}</h3>
                                         </Link>
-                                        <div className="flex justify-between items-center mt-4">
-                                            <span className="text-xl font-bold text-[#2C1810]">₹{product.price}</span>
+                                        <div className="flex flex-col gap-3 mt-auto">
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-xl font-bold text-[#2C1810]">₹{product.price}</span>
+                                                <button
+                                                    onClick={() => handleAddToCart(product)}
+                                                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-bold transition-all ${addedId === product._id ? 'bg-green-600 text-white' : 'bg-slate-100 text-[#2C1810] hover:bg-[#2C1810] hover:text-white'}`}
+                                                    title="Add to Cart"
+                                                >
+                                                    {addedId === product._id ? <CheckCircle2 size={16} /> : <ShoppingCart size={16} />}
+                                                </button>
+                                            </div>
                                             <button
-                                                onClick={() => handleAddToCart(product)}
-                                                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${addedId === product._id ? 'bg-green-600 text-white' : 'bg-[#2C1810] text-white hover:bg-[#C97E45]'}`}
+                                                onClick={() => handleBuyNow(product)}
+                                                className="w-full py-2.5 rounded-lg bg-[#2C1810] text-white font-bold text-sm hover:bg-[#C97E45] transition-colors shadow-md"
                                             >
-                                                {addedId === product._id ? <CheckCircle2 size={16} /> : <ShoppingCart size={16} />}
-                                                <span>{addedId === product._id ? 'Added' : 'Add'}</span>
+                                                Buy Now
                                             </button>
                                         </div>
                                     </div>

@@ -3,6 +3,53 @@ const Notification = require('../models/Notification');
 const User = require('../models/User');
 const Offer = require('../models/Offer');
 const sendEmail = require('../utils/sendEmail');
+const Razorpay = require('razorpay');
+const Settings = require('../models/Settings');
+
+// @desc    Create Razorpay Order
+// @route   POST /api/orders/razorpay
+// @access  Public
+exports.createRazorpayOrder = async (req, res) => {
+    try {
+        const { amount, currency } = req.body;
+
+        // Fetch Razorpay credentials from Settings
+        const settings = await Settings.findOne({ type: 'payment' });
+        if (!settings || !settings.data || !settings.data.enableRazorpay) {
+            return res.status(400).json({ message: 'Razorpay is not enabled' });
+        }
+
+        const { razorpayKeyId, razorpayKeySecret } = settings.data;
+
+        if (!razorpayKeyId || !razorpayKeySecret) {
+            return res.status(500).json({ message: 'Razorpay keys not configured' });
+        }
+
+        const instance = new Razorpay({
+            key_id: razorpayKeyId,
+            key_secret: razorpayKeySecret,
+        });
+
+        const options = {
+            amount: Math.round(amount * 100), // amount in paise
+            currency: currency || 'INR',
+            receipt: `receipt_${Date.now()}`
+        };
+
+        const order = await instance.orders.create(options);
+
+        res.json({
+            success: true,
+            order_id: order.id,
+            amount: order.amount,
+            key_id: razorpayKeyId,
+            currency: order.currency
+        });
+    } catch (error) {
+        console.error('Razorpay Error:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
 
 // @desc    Create new order
 // @route   POST /api/orders
