@@ -16,7 +16,7 @@ const PublicLayout = () => {
                         <p className="text-gray-400">Premium coffee experience delivered to your doorstep.</p>
                     </div>
                     <div>
-                        <h4 className="font-bold mb-4">Shop</h4>
+                        <h4 className="font-bold text-white mb-4">Shop</h4>
                         <ul className="space-y-2 text-gray-400">
                             <li><Link to="/shop/coffee" className="hover:text-[#C97E45] transition-colors">Coffee</Link></li>
                             <li><Link to="/shop/cold-coffee" className="hover:text-[#C97E45] transition-colors">Cold Coffee</Link></li>
@@ -24,7 +24,7 @@ const PublicLayout = () => {
                         </ul>
                     </div>
                     <div>
-                        <h4 className="font-bold mb-4">Support</h4>
+                        <h4 className="font-bold text-white mb-4">Support</h4>
                         <ul className="space-y-2 text-gray-400">
                             <li><Link to="/contact" className="hover:text-[#C97E45] transition-colors">Contact Us</Link></li>
                             <li><Link to="/faqs" className="hover:text-[#C97E45] transition-colors">FAQs</Link></li>
@@ -32,7 +32,7 @@ const PublicLayout = () => {
                         </ul>
                     </div>
                     <div>
-                        <h4 className="font-bold mb-4">Newsletter</h4>
+                        <h4 className="font-bold text-white mb-4">Newsletter</h4>
                         <p className="text-gray-400 mb-4">Subscribe for latest offers.</p>
                         <div className="flex">
                             <input type="email" placeholder="Your email" className="bg-[#3a2220] border-none text-white px-4 py-2 rounded-l w-full focus:outline-none" />

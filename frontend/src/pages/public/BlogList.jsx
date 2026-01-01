@@ -38,7 +38,7 @@ const BlogList = () => {
             <div className="bg-[#2C1810] text-white py-20 px-4 text-center relative overflow-hidden">
                 <div className="relative z-10">
                     <span className="text-[#C97E45] font-bold tracking-widest uppercase text-sm mb-4 block animate-in fade-in slide-in-from-bottom-4">Our Journal</span>
-                    <h1 className="text-4xl md:text-6xl font-bold font-[Outfit] mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700">Coffee Culture & Stories</h1>
+                    <h1 className="text-4xl text-white md:text-6xl font-bold font-[Outfit] mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700">Coffee Culture & Stories</h1>
                     <p className="max-w-2xl mx-auto text-white/80 text-lg animate-in fade-in slide-in-from-bottom-8 duration-1000">
                         Discover the art of brewing, latest news from our estates, and stories from the world of coffee.
                     </p>

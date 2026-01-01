@@ -63,8 +63,14 @@ const Login = () => {
                 if (data.data.role === 'admin') {
                     navigate('/admin');
                 } else {
-                    const from = location.state?.from?.pathname || '/customer/dashboard';
-                    navigate(from, { replace: true });
+                    let target = '/customer/dashboard';
+                    if (location.state?.from) {
+                        // Handle both string path and object with pathname
+                        target = typeof location.state.from === 'string'
+                            ? location.state.from
+                            : (location.state.from.pathname || '/customer/dashboard');
+                    }
+                    navigate(target, { replace: true });
                 }
             } else {
                 setError(data.message || 'Login failed');
@@ -87,7 +93,7 @@ const Login = () => {
                             <Coffee className="mr-2 text-[#C97E45]" /> KRC! <span className="ml-1 text-[#C97E45]">Coffee</span>
                         </Link>
                         <div className="mt-20">
-                            <h2 className="text-4xl font-bold font-[Outfit] leading-tight mb-4">
+                            <h2 className="text-4xl text-white font-bold font-[Outfit] leading-tight mb-4">
                                 Welcome Back <br />
                                 <span className="text-[#D4A574]">Coffee Lover!</span>
                             </h2>

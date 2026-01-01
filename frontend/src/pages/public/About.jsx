@@ -42,7 +42,7 @@ const About = () => {
                 </div>
                 <div className="relative z-10 text-center text-white px-4 animate-fade-in">
                     <span className="text-[#C97E45] font-bold tracking-[0.2em] uppercase text-sm md:text-base mb-4 block">Since 2010</span>
-                    <h1 className="text-5xl md:text-7xl font-bold font-[Outfit] mb-6">Our Story</h1>
+                    <h1 className="text-5xl text-white md:text-7xl font-bold font-[Outfit] mb-6">Our Story</h1>
                     <p className="max-w-2xl mx-auto text-lg md:text-xl text-white/90 font-light leading-relaxed">
                         From a small plantation in Chikmagalur to your morning cup, we are dedicated to the art of coffee.
                     </p>

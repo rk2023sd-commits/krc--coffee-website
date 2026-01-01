@@ -97,7 +97,7 @@ const Home = () => {
 
             {/* Featured Products */}
             <section className="py-20 bg-[#FDFBF7]">
-                <div className="container mx-auto px-12">
+                <div className="container mx-auto px-20">
                     <div className="text-center mb-12">
                         <h2 className="text-4xl font-bold font-[Outfit] mb-4">Our Best Sellers</h2>
                         <p className="text-[#6D5E57]">Discover the favorites that our customers can't get enough of.</p>
@@ -156,13 +156,13 @@ const Home = () => {
             {/* Brew Your Own Promo */}
             <section className="py-20 bg-[#4A2C2A] relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[#5d3a37] rounded-l-full opacity-20 transform translate-x-1/3"></div>
-                <div className="container mx-auto px-12 relative z-10">
+                <div className="container mx-auto px-20 relative z-10">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-12">
                         <div className="md:w-1/2 text-white">
                             <div className="inline-flex items-center gap-2 bg-[#C97E45] px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-6">
                                 <Sparkles size={14} /> New Feature
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-bold font-[Outfit] mb-6 leading-tight">
+                            <h2 className="text-white md:text-5xl font-bold font-[Outfit] mb-6 leading-tight">
                                 Be Your Own Barista
                             </h2>
                             <p className="text-orange-100/80 text-lg mb-8 max-w-lg">
@@ -188,7 +188,7 @@ const Home = () => {
 
             {/* From The Journal */}
             <section className="py-20 bg-white">
-                <div className="container mx-auto px-12">
+                <div className="container mx-auto px-20">
                     <div className="flex justify-between items-end mb-12">
                         <div>
                             <h2 className="text-4xl font-bold font-[Outfit] mb-4">From The Journal</h2>

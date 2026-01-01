@@ -2,11 +2,25 @@ import React from 'react';
 import { useCart } from '../../context/CartContext';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Trash } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
     const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
     const navigate = useNavigate();
     const location = useLocation();
+
+    const handleCheckout = () => {
+        const token = localStorage.getItem('token');
+        const isCustomer = location.pathname.startsWith('/customer');
+        const targetPath = isCustomer ? '/customer/checkout' : '/checkout';
+
+        if (!token || token === 'undefined' || token === 'null') {
+            toast.error('Please login to continue');
+            navigate('/login', { state: { from: targetPath } });
+        } else {
+            navigate(targetPath);
+        }
+    };
 
     if (cartItems.length === 0) {
         return (
@@ -25,7 +39,7 @@ const Cart = () => {
 
     return (
         <div className="bg-[#FDFBF7] min-h-screen py-12">
-            <div className="container mx-auto px-4">
+            <div className="container mx-auto px-20">
                 <div className="flex items-center justify-between mb-10">
                     <h1 className="text-4xl font-bold text-[#2C1810] font-[Outfit]">Shopping Cart</h1>
                     <button
@@ -111,10 +125,7 @@ const Cart = () => {
                             </div>
 
                             <button
-                                onClick={() => {
-                                    const isCustomer = location.pathname.startsWith('/customer');
-                                    navigate(isCustomer ? '/customer/checkout' : '/checkout');
-                                }}
+                                onClick={handleCheckout}
                                 className="w-full bg-[#4A2C2A] text-white py-4 rounded-2xl font-bold shadow-xl shadow-[#4A2C2A]/20 hover:bg-[#2C1810] flex items-center justify-center group transition-all"
                             >
                                 <span>Proceed to Checkout</span>

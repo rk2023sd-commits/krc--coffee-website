@@ -10,8 +10,8 @@ const Checkout = () => {
 
     // Enforce Login
     const token = localStorage.getItem('token');
-    if (!token) {
-        return <Navigate to="/login" state={{ from: location }} replace />;
+    if (!token || token === 'undefined' || token === 'null') {
+        return <Navigate to="/login" state={{ from: location.pathname }} replace />;
     }
 
     const [loading, setLoading] = useState(false);
