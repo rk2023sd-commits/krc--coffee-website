@@ -352,73 +352,18 @@ const Checkout = () => {
                                     <CreditCard size={20} />
                                     <span>Payment Method</span>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <label className={`flex items-center p-4 border rounded-2xl cursor-pointer transition-all ${formData.paymentMethod === 'COD' ? 'border-[#C97E45] bg-orange-50' : 'border-slate-100'}`}>
-                                        <input
-                                            type="radio" name="paymentMethod" value="COD"
-                                            checked={formData.paymentMethod === 'COD'}
-                                            onChange={handleChange} className="hidden"
-                                        />
-                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 ${formData.paymentMethod === 'COD' ? 'border-[#C97E45]' : 'border-slate-300'}`}>
-                                            {formData.paymentMethod === 'COD' && <div className="w-2.5 h-2.5 bg-[#C97E45] rounded-full"></div>}
-                                        </div>
-                                        <span className="font-bold text-[#2C1810]">Cash on Delivery</span>
-                                    </label>
-                                    <label className={`flex items-center p-4 border rounded-2xl cursor-pointer transition-all ${formData.paymentMethod === 'Online' ? 'border-[#C97E45] bg-orange-50' : 'border-slate-100'}`}>
-                                        <input
-                                            type="radio" name="paymentMethod" value="Online"
-                                            checked={formData.paymentMethod === 'Online'}
-                                            onChange={handleChange} className="hidden"
-                                        />
-                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 ${formData.paymentMethod === 'Online' ? 'border-[#C97E45]' : 'border-slate-300'}`}>
-                                            {formData.paymentMethod === 'Online' && <div className="w-2.5 h-2.5 bg-[#C97E45] rounded-full"></div>}
-                                        </div>
-                                        <span className="font-bold text-[#2C1810]">Online Payment</span>
-                                    </label>
-                                </div>
-                                {formData.paymentMethod === 'Online' && (
-                                    <div className="mt-4 p-6 bg-slate-50 border border-slate-200 rounded-2xl animate-in fade-in slide-in-from-top-2">
-                                        {savedCards.length > 0 ? (
-                                            <div className="space-y-4">
-                                                <p className="text-sm font-bold text-[#4A2C2A]">Select Saved Card:</p>
-                                                {savedCards.map(card => (
-                                                    <div
-                                                        key={card._id}
-                                                        onClick={() => setSelectedCard(card._id)}
-                                                        className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${selectedCard === card._id ? 'bg-white border-[#C97E45] shadow-sm' : 'bg-transparent border-slate-200 hover:bg-white'}`}
-                                                    >
-                                                        <div className="flex items-center gap-4">
-                                                            <div className={`p-2 rounded-lg ${card.cardType === 'Visa' ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-600'}`}>
-                                                                <CreditCard size={20} />
-                                                            </div>
-                                                            <div>
-                                                                <p className="font-bold text-sm text-[#4A2C2A]">•••• {card.last4}</p>
-                                                                <p className="text-xs text-slate-500">{card.cardType} • Expires {card.expiry}</p>
-                                                            </div>
-                                                        </div>
-                                                        {selectedCard === card._id && <CheckCircle2 size={20} className="text-[#C97E45]" />}
-                                                    </div>
-                                                ))}
-                                                <div className="pt-2">
-                                                    <Link to="/customer/payments" className="text-xs font-bold text-[#C97E45] hover:underline">+ Add New Card</Link>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div>
-                                                <p className="text-sm text-slate-600 mb-2">No saved cards found.</p>
-                                                <Link to="/customer/payments" className="text-sm font-bold text-[#C97E45] hover:underline">Add a Card to continue</Link>
-                                                <div className="mt-4 pt-4 border-t border-slate-200">
-                                                    <p className="text-xs text-slate-400">Or proceed to pay with:</p>
-                                                    <div className="flex items-center gap-4 mt-2 opacity-50">
-                                                        <div className="w-10 h-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center font-bold text-blue-600 italic text-[10px]">VISA</div>
-                                                        <div className="w-10 h-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center font-bold text-red-600 italic text-[10px]">MC</div>
-                                                        <div className="w-10 h-10 bg-white rounded-lg border border-slate-200 flex items-center justify-center font-bold text-orange-600 text-[10px]">UPI</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
+                                <label className={`flex items-center p-4 border rounded-2xl cursor-pointer transition-all border-[#C97E45] bg-orange-50`}>
+                                    <input
+                                        type="radio" name="paymentMethod" value="COD"
+                                        checked={true}
+                                        readOnly
+                                        className="hidden"
+                                    />
+                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mr-3 border-[#C97E45]`}>
+                                        <div className="w-2.5 h-2.5 bg-[#C97E45] rounded-full"></div>
                                     </div>
-                                )}
+                                    <span className="font-bold text-[#2C1810]">Cash on Delivery</span>
+                                </label>
                             </div>
 
                             <div className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-4">
