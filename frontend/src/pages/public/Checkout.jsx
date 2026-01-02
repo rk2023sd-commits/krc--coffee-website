@@ -455,9 +455,10 @@ const Checkout = () => {
         setLoading(false);
     };
 
-    // Enforce Login - Checks at render time, but allows hooks to run first
+    // Enforce Login - Checks at render time
     if (!token || token === 'undefined' || token === 'null') {
-        return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+        // preserve existing state (like buyNowItem) when redirecting
+        return <Navigate to="/login" state={{ ...location.state, from: location.pathname }} replace />;
     }
 
     if (orderSuccess) {

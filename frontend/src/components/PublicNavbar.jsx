@@ -87,10 +87,21 @@ const PublicNavbar = () => {
             </Link>
 
             <div className="hidden lg:flex items-center space-x-3 border-l pl-5">
-              <Link to="/login" className="text-sm font-bold text-[#4A2C2A] hover:text-[#C97E45] transition-colors">Login</Link>
-              <Link to="/register" className="bg-[#4A2C2A] text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-orange-900/10 hover:bg-[#2C1810] transition-all hover:translate-y-[-1px]">
-                Register
-              </Link>
+              {localStorage.getItem('token') ? (
+                <Link to="/customer/dashboard" className="flex items-center space-x-2 text-[#4A2C2A] font-bold hover:text-[#C97E45] transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-[#C97E45] text-white flex items-center justify-center">
+                    <User size={16} />
+                  </div>
+                  <span>My Account</span>
+                </Link>
+              ) : (
+                <>
+                  <Link to="/login" className="text-sm font-bold text-[#4A2C2A] hover:text-[#C97E45] transition-colors">Login</Link>
+                  <Link to="/register" className="bg-[#4A2C2A] text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-lg shadow-orange-900/10 hover:bg-[#2C1810] transition-all hover:translate-y-[-1px]">
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}

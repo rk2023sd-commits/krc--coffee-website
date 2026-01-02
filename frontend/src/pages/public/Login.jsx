@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Coffee, Chrome, Facebook } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -64,16 +65,24 @@ const Login = () => {
                     navigate('/admin');
                 } else {
                     let target = '/customer/dashboard';
+
                     if (location.state?.from) {
-                        target = typeof location.state.from === 'string'
+                        // Handle object or string in location.state.from
+                        const fromPath = typeof location.state.from === 'string'
                             ? location.state.from
                             : (location.state.from.pathname || '/customer/dashboard');
 
-                        // Fix: If coming from public checkout link, redirect to customer checkout inside dashboard
-                        if (target === '/checkout') {
-                            target = '/customer/checkout';
+                        // If coming from public checkout link, redirect to public checkout (which is now gated)
+                        // OR if it's the specific buying flow
+                        if (fromPath === '/checkout' || fromPath === '/customer/checkout') {
+                            target = '/customer/checkout'; // Prefer customer checkout wrapper if logged in
+                            // But actually standard /checkout works too if we want public look
+                            // Let's stick to customer for better UX
+                        } else {
+                            target = fromPath;
                         }
                     }
+
                     // Pass the existing state (which contains buyNowItem) to the target
                     navigate(target, { replace: true, state: location.state });
                 }
@@ -85,6 +94,47 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSocialLogin = async (provider) => {
+        setLoading(true);
+        // Simulate API call delay
+        const loadingToast = toast.loading(`Connecting to ${provider}...`);
+
+        setTimeout(() => {
+            toast.dismiss(loadingToast);
+            toast.success(`Successfully logged in with ${provider}!`);
+
+            // Create dummy user data for simulation
+            const dummyUser = {
+                _id: 'social_user_123',
+                name: `Test ${provider} User`,
+                email: `user@${provider.toLowerCase()}.com`,
+                role: 'costumer',
+                token: 'dummy_social_token_' + Date.now()
+            };
+
+            // Save to localStorage
+            localStorage.setItem('token', dummyUser.token);
+            localStorage.setItem('user', JSON.stringify(dummyUser));
+
+            setLoading(false);
+
+            // Redirect logic
+            let target = '/customer/dashboard';
+            if (location.state?.from) {
+                const fromPath = typeof location.state.from === 'string'
+                    ? location.state.from
+                    : (location.state.from.pathname || '/customer/dashboard');
+
+                if (fromPath === '/checkout' || fromPath === '/customer/checkout') {
+                    target = '/customer/checkout';
+                } else {
+                    target = fromPath;
+                }
+            }
+            navigate(target, { replace: true, state: location.state });
+        }, 1500);
     };
 
     return (
@@ -196,11 +246,11 @@ const Login = () => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <button className="flex items-center justify-center space-x-2 py-3 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors">
+                            <button onClick={() => handleSocialLogin('Google')} type="button" className="flex items-center justify-center space-x-2 py-3 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors">
                                 <Chrome size={18} className="text-slate-600" />
                                 <span className="text-sm font-bold text-slate-600">Google</span>
                             </button>
-                            <button className="flex items-center justify-center space-x-2 py-3 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors">
+                            <button onClick={() => handleSocialLogin('Facebook')} type="button" className="flex items-center justify-center space-x-2 py-3 border border-slate-100 rounded-2xl hover:bg-slate-50 transition-colors">
                                 <Facebook size={18} className="text-blue-600" />
                                 <span className="text-sm font-bold text-slate-600">Facebook</span>
                             </button>
