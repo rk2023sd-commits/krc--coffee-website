@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Tag, Plus, Trash2, AlertCircle, CheckCircle2, Loader2, FolderTree } from 'lucide-react';
 
 const Categories = () => {
@@ -20,7 +21,7 @@ const Categories = () => {
     const fetchCategories = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/categories', {
+            const res = await fetch(`${API_URL}/api/categories`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -57,7 +58,7 @@ const Categories = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/categories', {
+            const res = await fetch(`${API_URL}/api/categories`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +88,7 @@ const Categories = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
+            const res = await fetch(`${API_URL}/api/categories/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

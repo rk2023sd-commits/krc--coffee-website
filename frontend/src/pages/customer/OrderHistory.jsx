@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { ShoppingBag, Package, Calendar, Clock, MapPin, ChevronRight, Loader2, Coffee } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -20,7 +21,7 @@ const OrderHistory = () => {
                     userId = user._id || user.id || 'guest';
                 }
 
-                const response = await fetch(`http://localhost:5000/api/orders/myorders/${userId}`);
+                const response = await fetch(`${API_URL}/api/orders/myorders/${userId}`);
                 const data = await response.json();
 
                 if (response.ok) {

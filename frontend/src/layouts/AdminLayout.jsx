@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL from '../config';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
     BarChart3, Box, ShoppingCart, Users, Tag,
@@ -44,7 +45,7 @@ const AdminLayout = () => {
         const fetchPending = async () => {
             const token = localStorage.getItem('token');
             try {
-                const res = await fetch('http://localhost:5000/api/orders?status=Pending', {
+                const res = await fetch(`${API_URL}/api/orders?status=Pending`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -125,7 +126,7 @@ const AdminLayout = () => {
     React.useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/orders');
+                const res = await fetch(`${API_URL}/api/orders`);
                 const data = await res.json();
                 if (Array.isArray(data)) {
                     // Sort by newest first just in case

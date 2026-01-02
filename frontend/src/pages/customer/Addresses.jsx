@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { MapPin, Plus, Trash2, Home, Briefcase, Loader2, AlertCircle } from 'lucide-react';
 
 const Addresses = () => {
@@ -24,7 +25,7 @@ const Addresses = () => {
     const fetchAddresses = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/auth/me', {
+            const res = await fetch(`${API_URL}/api/auth/me`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -49,7 +50,7 @@ const Addresses = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/users/address', {
+            const res = await fetch(`${API_URL}/api/users/address`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -85,7 +86,7 @@ const Addresses = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/users/address/${id}`, {
+            const res = await fetch(`${API_URL}/api/users/address/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

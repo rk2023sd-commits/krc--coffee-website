@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { DollarSign, TrendingUp, Calendar, RefreshCw } from 'lucide-react';
 
 const SalesReport = () => {
@@ -12,7 +13,7 @@ const SalesReport = () => {
     const fetchSales = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/reports/sales', {
+            const res = await fetch(`${API_URL}/api/reports/sales`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await res.json();

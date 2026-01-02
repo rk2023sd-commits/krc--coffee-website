@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { AlertCircle, CheckCircle2, Info, Package, DollarSign, Tag, UploadCloud, X, Plus } from 'lucide-react';
 
 const AddProduct = () => {
@@ -20,7 +21,7 @@ const AddProduct = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/categories');
+                const res = await fetch(`${API_URL}/api/categories`);
                 const data = await res.json();
                 if (data.success) {
                     setCategories(data.data);
@@ -81,7 +82,7 @@ const AddProduct = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/products', {
+            const response = await fetch(`${API_URL}/api/products`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`

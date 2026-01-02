@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL from '../config';
 import { useCart } from '../context/CartContext';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -36,7 +37,7 @@ const CustomerLayout = () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) return;
-                const res = await fetch('http://localhost:5000/api/notifications', {
+                const res = await fetch(`${API_URL}/api/notifications`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await res.json();
@@ -73,13 +74,13 @@ const CustomerLayout = () => {
 
             try {
                 // Wishlist
-                const profileRes = await fetch('http://localhost:5000/api/users/profile', {
+                const profileRes = await fetch(`${API_URL}/api/users/profile`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const profileData = await profileRes.json();
 
                 // Orders
-                const ordersRes = await fetch('http://localhost:5000/api/orders/myorders', {
+                const ordersRes = await fetch(`${API_URL}/api/orders/myorders`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const ordersData = await ordersRes.json();

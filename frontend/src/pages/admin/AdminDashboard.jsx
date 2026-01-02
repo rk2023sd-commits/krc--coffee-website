@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import {
     TrendingUp, Users, ShoppingCart, DollarSign,
     ArrowUpRight, ArrowDownRight, Package,
@@ -56,15 +57,15 @@ const AdminDashboard = () => {
             const headers = { 'Authorization': `Bearer ${token}` };
 
             // Fetch Products
-            const pRes = await fetch('http://localhost:5000/api/products');
+            const pRes = await fetch(`${API_URL}/api/products`);
             const pData = await pRes.json();
 
             // Fetch Orders
-            const oRes = await fetch('http://localhost:5000/api/orders');
+            const oRes = await fetch(`${API_URL}/api/orders`);
             const oData = await oRes.json();
 
             // Fetch Detailed Revenue for Chart
-            const rRes = await fetch('http://localhost:5000/api/reports/revenue', { headers });
+            const rRes = await fetch(`${API_URL}/api/reports/revenue`, { headers });
             const rData = await rRes.json();
 
             // Calculate Revenue & Counts

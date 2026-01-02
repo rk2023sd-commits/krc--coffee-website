@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL from '../../config';
 import { Link } from 'react-router-dom';
 import { Mail, Lock, User, Phone, ArrowRight, Coffee, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
 
@@ -67,7 +68,7 @@ const Register = () => {
         setVerifying(true);
         setError('');
         try {
-            const res = await fetch('http://localhost:5000/api/auth/send-verification', {
+            const res = await fetch(`${API_URL}/api/auth/send-verification`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: formData.email })
@@ -90,7 +91,7 @@ const Register = () => {
     const handleVerifyOtp = async () => {
         if (!otp) return;
         try {
-            const res = await fetch('http://localhost:5000/api/auth/verify-otp', {
+            const res = await fetch(`${API_URL}/api/auth/verify-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: formData.email, otp })
@@ -123,7 +124,7 @@ const Register = () => {
         setSuccess('');
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/register', {
+            const response = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

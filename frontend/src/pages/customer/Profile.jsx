@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { User, Phone, Mail, Loader2, Save, X, Check, MapPin, ChevronRight, AlertCircle, ShieldCheck } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
@@ -26,7 +27,7 @@ const Profile = () => {
     const fetchProfile = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/users/profile', {
+            const res = await fetch(`${API_URL}/api/users/profile`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -48,7 +49,7 @@ const Profile = () => {
         setUpdating(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/users/profile', {
+            const res = await fetch(`${API_URL}/api/users/profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ const Profile = () => {
 
         setEmailLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/auth/send-verification', {
+            const res = await fetch(`${API_URL}/api/auth/send-verification`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: newEmail })
@@ -106,7 +107,7 @@ const Profile = () => {
         setEmailLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/auth/verify-email-change', {
+            const res = await fetch(`${API_URL}/api/auth/verify-email-change`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Save, RefreshCw, CreditCard } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -24,7 +25,7 @@ const PaymentSettings = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/settings/payment', {
+            const res = await fetch(`${API_URL}/api/settings/payment`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -43,7 +44,7 @@ const PaymentSettings = () => {
         setSaving(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/settings/payment', {
+            const res = await fetch(`${API_URL}/api/settings/payment`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

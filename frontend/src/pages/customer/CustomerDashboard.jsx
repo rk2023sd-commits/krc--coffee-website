@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import API_URL from '../../config';
 import { ShoppingBag, Star, Clock, ArrowRight, Heart } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { Link } from 'react-router-dom';
@@ -32,7 +33,7 @@ const CustomerDashboard = () => {
                     userId = user._id || user.id || 'guest';
                 }
 
-                const res = await fetch(`http://localhost:5000/api/orders/myorders/${userId}`);
+                const res = await fetch(`${API_URL}/api/orders/myorders/${userId}`);
                 const data = await res.json();
 
                 if (Array.isArray(data)) {

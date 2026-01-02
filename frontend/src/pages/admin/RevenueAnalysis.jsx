@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { PieChart, CreditCard, RefreshCw } from 'lucide-react';
 
 const RevenueAnalysis = () => {
@@ -12,7 +13,7 @@ const RevenueAnalysis = () => {
     const fetchRevenue = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/reports/revenue', {
+            const res = await fetch(`${API_URL}/api/reports/revenue`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await res.json();

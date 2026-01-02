@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import API_URL from '../../config';
 import { Calendar, User, ArrowRight, Loader2 } from 'lucide-react';
 
 const BlogList = () => {
@@ -12,7 +13,7 @@ const BlogList = () => {
 
     const fetchBlogs = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/blogs');
+            const res = await fetch(`${API_URL}/api/blogs`);
             const data = await res.json();
             if (data.success) {
                 setBlogs(data.data);

@@ -20,7 +20,7 @@ const Notifications = () => {
                 return;
             }
 
-            const res = await fetch('http://localhost:5000/api/notifications', {
+            const res = await fetch(`${API_URL}/api/notifications`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -45,7 +45,7 @@ const Notifications = () => {
     const markAsRead = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/notifications/${id}/read`, {
+            const res = await fetch(`${API_URL}/api/notifications/${id}/read`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -62,7 +62,7 @@ const Notifications = () => {
     const markAllRead = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/notifications/read-all', {
+            const res = await fetch(`${API_URL}/api/notifications/read-all`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -79,7 +79,7 @@ const Notifications = () => {
     const deleteNotification = async (id) => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/notifications/${id}`, {
+            const res = await fetch(`${API_URL}/api/notifications/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });

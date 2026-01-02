@@ -25,7 +25,7 @@ const Payments = () => {
     const fetchPaymentMethods = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/users/payment-methods', {
+            const res = await fetch(`${API_URL}/api/users/payment-methods`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await res.json();
@@ -47,7 +47,7 @@ const Payments = () => {
         if (!window.confirm('Are you sure you want to remove this card?')) return;
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/users/payment-methods/${id}`, {
+            const res = await fetch(`${API_URL}/api/users/payment-methods/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -76,7 +76,7 @@ const Payments = () => {
                 last4: newCard.cardNumber.slice(-4) // Extract last 4 for secure storage
             };
 
-            const res = await fetch('http://localhost:5000/api/users/payment-methods', {
+            const res = await fetch(`${API_URL}/api/users/payment-methods`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ const Payments = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/users/payment-methods/${editingCard._id}`, {
+            const res = await fetch(`${API_URL}/api/users/payment-methods/${editingCard._id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

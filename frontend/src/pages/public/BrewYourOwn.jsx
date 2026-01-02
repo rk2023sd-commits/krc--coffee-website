@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import {
     Coffee, Check, ArrowRight, ArrowLeft, Droplets,
     CupSoda, Crown, ShoppingBag, RotateCcw, Sparkles
@@ -79,7 +80,7 @@ const BrewYourOwn = () => {
         try {
             // Find a real product from DB to link this order to
             // Ideally we should have a "Custom Coffee" product or use the base name
-            const response = await fetch('http://localhost:5000/api/products');
+            const response = await fetch(`${API_URL}/api/products`);
             const data = await response.json();
 
             // Try to find a product that matches the base name or fallback to first coffee

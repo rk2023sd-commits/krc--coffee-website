@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { ShoppingBag, Eye, Truck, CheckCircle, XCircle, Clock, AlertCircle, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
@@ -15,7 +16,7 @@ const OrdersList = ({ statusFilter }) => {
 
     const fetchOrders = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/orders');
+            const res = await fetch(`${API_URL}/api/orders`);
             const data = await res.json();
 
             // Sort by date desc
@@ -32,7 +33,7 @@ const OrdersList = ({ statusFilter }) => {
         setUpdatingId(id);
 
         try {
-            const res = await fetch(`http://localhost:5000/api/orders/${id}/status`, {
+            const res = await fetch(`${API_URL}/api/orders/${id}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })

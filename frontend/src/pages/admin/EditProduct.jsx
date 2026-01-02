@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Package, DollarSign, Tag, Info, Image as ImageIcon, CheckCircle2, AlertCircle, Save } from 'lucide-react';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -23,7 +24,7 @@ const EditProduct = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/products/${id}`);
+                const response = await fetch(`${API_URL}/api/products/${id}`);
                 const data = await response.json();
                 if (response.ok && data.success) {
                     const product = data.data;
@@ -63,7 +64,7 @@ const EditProduct = () => {
         setSuccess('');
 
         try {
-            const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+            const response = await fetch(`${API_URL}/api/products/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

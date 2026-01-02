@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL from '../../config';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowRight, Coffee, ChevronLeft } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -13,7 +14,7 @@ const ForgotPassword = () => {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/forgotpassword', {
+            const response = await fetch(`${API_URL}/api/auth/forgotpassword`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

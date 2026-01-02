@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Package, TrendingUp, RefreshCw, Star } from 'lucide-react';
 
 const ProductPerformance = () => {
@@ -12,7 +13,7 @@ const ProductPerformance = () => {
     const fetchPerformance = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/reports/performance', {
+            const res = await fetch(`${API_URL}/api/reports/performance`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await res.json();

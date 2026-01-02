@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import {
     Search, Filter, ExternalLink, Trash2, CheckCircle,
     Truck, Clock, Loader2, Package, MoreVertical, Check
@@ -13,7 +14,7 @@ const AllOrdersAdmin = () => {
     const fetchAllOrders = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/orders');
+            const response = await fetch(`${API_URL}/api/orders`);
             const data = await response.json();
             if (response.ok) {
                 setOrders(data);
@@ -33,8 +34,8 @@ const AllOrdersAdmin = () => {
         try {
             // If delivering, use the specific deliver endpoint
             const url = status === 'Delivered'
-                ? `http://localhost:5000/api/orders/${id}/deliver`
-                : `http://localhost:5000/api/orders/${id}`; // Future endpoint for other status updates
+                ? `${API_URL}/api/orders/${id}/deliver`
+                : `${API_URL}/api/orders/${id}`; // Future endpoint for other status updates
 
             const response = await fetch(url, {
                 method: status === 'Delivered' ? 'PUT' : 'PATCH',

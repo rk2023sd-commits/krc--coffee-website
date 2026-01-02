@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Package, Trash2, Edit, ExternalLink, Search, Filter, Loader2, AlertCircle } from 'lucide-react';
 
 const AllProducts = () => {
@@ -10,7 +11,7 @@ const AllProducts = () => {
     const fetchProducts = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:5000/api/products');
+            const response = await fetch(`${API_URL}/api/products`);
             const data = await response.json();
             if (response.ok) {
                 setProducts(data.data);
@@ -37,7 +38,7 @@ const AllProducts = () => {
         // if (!window.confirm('Are you sure you want to delete this product?')) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/api/products/${id}`, {
+            const response = await fetch(`${API_URL}/api/products/${id}`, {
                 method: 'DELETE',
             });
             if (response.ok) {

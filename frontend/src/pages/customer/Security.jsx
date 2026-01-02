@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL from '../../config';
 import { Lock, Unlock, CheckCircle, ShieldCheck, Info, Loader2 } from 'lucide-react';
 
 const Security = () => {
@@ -28,7 +29,7 @@ const Security = () => {
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
             const token = localStorage.getItem('token') || (userInfo && userInfo.token);
 
-            const response = await fetch('http://localhost:5000/api/users/update-password', {
+            const response = await fetch(`${API_URL}/api/users/update-password`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

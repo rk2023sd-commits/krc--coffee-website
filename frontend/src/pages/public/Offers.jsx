@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Copy, Check, Loader2, Gift } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -10,7 +11,7 @@ const Offers = () => {
     useEffect(() => {
         const fetchOffers = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/offers');
+                const res = await fetch(`${API_URL}/api/offers`);
                 const data = await res.json();
                 if (data.success) {
                     // Filter only active offers

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { useCart } from '../../context/CartContext';
 import { ShoppingBag, ChevronLeft, CreditCard, Truck, ShieldCheck, CheckCircle2, Loader2, AlertCircle, X, MapPin, Star, QrCode } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -66,7 +67,7 @@ const Checkout = () => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const res = await fetch('http://localhost:5000/api/settings/payment', {
+                    const res = await fetch(`${API_URL}/api/settings/payment`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     const data = await res.json();
@@ -123,7 +124,7 @@ const Checkout = () => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const res = await fetch('http://localhost:5000/api/users/profile', {
+                    const res = await fetch(`${API_URL}/api/users/profile`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
 
@@ -141,7 +142,7 @@ const Checkout = () => {
                         setUserPoints(data.data.rewardPoints || 0);
 
                         // Fetch payment methods
-                        const pmRes = await fetch('http://localhost:5000/api/users/payment-methods', {
+                        const pmRes = await fetch(`${API_URL}/api/users/payment-methods`, {
                             headers: { 'Authorization': `Bearer ${token}` }
                         });
                         const pmData = await pmRes.json();
@@ -206,7 +207,7 @@ const Checkout = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:5000/api/offers', {
+            const response = await fetch(`${API_URL}/api/offers`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             const data = await response.json();
@@ -243,7 +244,7 @@ const Checkout = () => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const res = await fetch('http://localhost:5000/api/settings/tax', {
+                    const res = await fetch(`${API_URL}/api/settings/tax`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     const data = await res.json();
@@ -341,7 +342,7 @@ const Checkout = () => {
                 }
 
                 // 1. Create Order on Backend (Get Order ID for Razorpay)
-                const orderRes = await fetch('http://localhost:5000/api/orders/razorpay', {
+                const orderRes = await fetch(`${API_URL}/api/orders/razorpay`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ amount: finalTotal, currency: 'INR' })
@@ -431,7 +432,7 @@ const Checkout = () => {
             redeemedPoints: isRedeeming ? 100 : 0
         };
 
-        const response = await fetch('http://localhost:5000/api/orders', {
+        const response = await fetch(`${API_URL}/api/orders`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

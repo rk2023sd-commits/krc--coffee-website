@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Heart, Star, Filter, Loader2, Coffee, Search, CheckCircle2 } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
@@ -47,7 +48,7 @@ const Shop = () => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:5000/api/products');
+                const response = await fetch(`${API_URL}/api/products`);
                 const data = await response.json();
 
                 if (response.ok) {

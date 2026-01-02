@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Mail, Phone, MapPin, Send, Loader2, Facebook, Instagram, Twitter } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -16,7 +17,7 @@ const Contact = () => {
     useEffect(() => {
         const fetchInfo = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/cms/pages/cms');
+                const res = await fetch(`${API_URL}/api/cms/pages/cms`);
                 const data = await res.json();
                 if (data.success && data.data) {
                     setContactInfo(data.data);
@@ -36,7 +37,7 @@ const Contact = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/cms/contact', {
+            const res = await fetch(`${API_URL}/api/cms/contact`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import {
     ShoppingBag, Star, Heart, ArrowLeft, Plus, Minus,
@@ -31,7 +32,7 @@ const ProductDetails = () => {
 
     const fetchReviews = async () => {
         try {
-            const res = await fetch(`http://localhost:5000/api/products/${id}/reviews`);
+            const res = await fetch(`${API_URL}/api/products/${id}/reviews`);
             const data = await res.json();
             if (data.success) {
                 setReviews(data.data);
@@ -45,7 +46,7 @@ const ProductDetails = () => {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`http://localhost:5000/api/products/${id}`);
+                const response = await fetch(`${API_URL}/api/products/${id}`);
                 const data = await response.json();
                 if (data.success) {
                     setProduct(data.data);
@@ -90,7 +91,7 @@ const ProductDetails = () => {
 
         try {
             const token = localStorage.getItem('token');
-            const res = await fetch(`http://localhost:5000/api/products/${id}/reviews`, {
+            const res = await fetch(`${API_URL}/api/products/${id}/reviews`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,7 +105,7 @@ const ProductDetails = () => {
                 setNewReview({ rating: 5, comment: '' });
                 fetchReviews();
                 // Optionally refresh product to get new avg rating
-                const pRes = await fetch(`http://localhost:5000/api/products/${id}`);
+                const pRes = await fetch(`${API_URL}/api/products/${id}`);
                 const pData = await pRes.json();
                 if (pData.success) setProduct(pData.data);
             } else {

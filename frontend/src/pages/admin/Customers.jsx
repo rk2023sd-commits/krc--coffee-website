@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Users, Mail, Phone, Calendar, RefreshCw, Search } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -15,7 +16,7 @@ const Customers = () => {
     const fetchCustomers = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/users/customers', {
+            const res = await fetch(`${API_URL}/api/users/customers`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }

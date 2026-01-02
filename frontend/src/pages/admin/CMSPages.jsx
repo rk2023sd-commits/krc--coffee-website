@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Save, RefreshCw, LayoutTemplate, HelpCircle, Plus, Trash2, Edit2, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -32,7 +33,7 @@ const CMSPages = () => {
     const fetchSettings = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/settings/cms', {
+            const res = await fetch(`${API_URL}/api/settings/cms`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await res.json();
@@ -49,7 +50,7 @@ const CMSPages = () => {
     const handleSaveSettings = async () => {
         setSaving(true);
         try {
-            const res = await fetch('http://localhost:5000/api/settings/cms', {
+            const res = await fetch(`${API_URL}/api/settings/cms`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ const CMSPages = () => {
     const fetchFaqs = async () => {
         setLoadingFaqs(true);
         try {
-            const res = await fetch('http://localhost:5000/api/cms/admin/faqs', {
+            const res = await fetch(`${API_URL}/api/cms/admin/faqs`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await res.json();
@@ -89,8 +90,8 @@ const CMSPages = () => {
         e.preventDefault();
         try {
             const url = editingFaq
-                ? `http://localhost:5000/api/cms/admin/faqs/${editingFaq._id}`
-                : 'http://localhost:5000/api/cms/admin/faqs';
+                ? `${API_URL}/api/cms/admin/faqs/${editingFaq._id}`
+                : `${API_URL}/api/cms/admin/faqs`;
 
             const method = editingFaq ? 'PUT' : 'POST';
 
@@ -118,7 +119,7 @@ const CMSPages = () => {
     const handleDeleteFaq = async (id) => {
         if (!confirm('Delete this FAQ?')) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/cms/admin/faqs/${id}`, {
+            const res = await fetch(`${API_URL}/api/cms/admin/faqs/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
@@ -157,7 +158,7 @@ const CMSPages = () => {
     const fetchBlogs = async () => {
         setLoadingBlogs(true);
         try {
-            const res = await fetch('http://localhost:5000/api/blogs');
+            const res = await fetch(`${API_URL}/api/blogs`);
             const data = await res.json();
             if (data.success) setBlogs(data.data);
         } catch (e) { toast.error('Failed to fetch blogs'); }
@@ -167,7 +168,7 @@ const CMSPages = () => {
     const handleSaveBlog = async (e) => {
         e.preventDefault();
         try {
-            const url = editingBlog ? `http://localhost:5000/api/blogs/${editingBlog._id}` : 'http://localhost:5000/api/blogs';
+            const url = editingBlog ? `${API_URL}/api/blogs/${editingBlog._id}` : `${API_URL}/api/blogs`;
             const method = editingBlog ? 'PUT' : 'POST';
 
             // Process tags
@@ -199,7 +200,7 @@ const CMSPages = () => {
     const handleDeleteBlog = async (id) => {
         if (!confirm('Delete this blog post?')) return;
         try {
-            await fetch(`http://localhost:5000/api/blogs/${id}`, {
+            await fetch(`${API_URL}/api/blogs/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });

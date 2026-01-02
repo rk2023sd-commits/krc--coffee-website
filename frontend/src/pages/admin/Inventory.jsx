@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Package, Search, Save, AlertCircle, TrendingUp, TrendingDown, AlertTriangle, CheckCircle2 } from 'lucide-react';
 
 const Inventory = () => {
@@ -13,7 +14,7 @@ const Inventory = () => {
 
     const fetchProducts = async () => {
         try {
-            const res = await fetch('http://localhost:5000/api/products');
+            const res = await fetch(`${API_URL}/api/products`);
             const data = await res.json();
             if (data.success) {
                 setProducts(data.data);
@@ -35,7 +36,7 @@ const Inventory = () => {
         setUpdateStatus({ ...updateStatus, [id]: 'saving' });
 
         try {
-            const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+            const res = await fetch(`${API_URL}/api/products/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ stock: newStock })

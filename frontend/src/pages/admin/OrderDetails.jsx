@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
     ChevronLeft, Package, User, MapPin, CreditCard,
@@ -17,7 +18,7 @@ const OrderDetails = () => {
     useEffect(() => {
         const fetchOrderDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/orders/${id}`);
+                const response = await fetch(`${API_URL}/api/orders/${id}`);
                 const data = await response.json();
                 if (response.ok) {
                     setOrder(data);
@@ -36,7 +37,7 @@ const OrderDetails = () => {
     const updateStatus = async (newStatus) => {
         try {
             setUpdating(true);
-            const response = await fetch(`http://localhost:5000/api/orders/${id}/status`, {
+            const response = await fetch(`${API_URL}/api/orders/${id}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })

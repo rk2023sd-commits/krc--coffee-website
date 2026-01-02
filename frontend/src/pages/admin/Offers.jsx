@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Tag, Plus, Trash2, Power, Calendar, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 
@@ -24,7 +25,7 @@ const Offers = () => {
     const fetchOffers = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/offers', {
+            const res = await fetch(`${API_URL}/api/offers`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await res.json();
@@ -41,7 +42,7 @@ const Offers = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:5000/api/offers', {
+            const res = await fetch(`${API_URL}/api/offers`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -72,7 +73,7 @@ const Offers = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this offer?')) return;
         try {
-            const res = await fetch(`http://localhost:5000/api/offers/${id}`, {
+            const res = await fetch(`${API_URL}/api/offers/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
@@ -86,7 +87,7 @@ const Offers = () => {
 
     const handleToggle = async (id) => {
         try {
-            const res = await fetch(`http://localhost:5000/api/offers/${id}/toggle`, {
+            const res = await fetch(`${API_URL}/api/offers/${id}/toggle`, {
                 method: 'PUT',
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });

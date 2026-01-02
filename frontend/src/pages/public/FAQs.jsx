@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { ChevronDown, ChevronUp, HelpCircle, Search, Loader2 } from 'lucide-react';
 
 const FAQs = () => {
@@ -12,7 +13,7 @@ const FAQs = () => {
     useEffect(() => {
         const fetchFAQs = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/cms/faqs');
+                const res = await fetch(`${API_URL}/api/cms/faqs`);
                 const data = await res.json();
                 if (data.success) {
                     setFaqs(data.data);
@@ -66,8 +67,8 @@ const FAQs = () => {
                                 key={cat}
                                 onClick={() => setActiveCategory(cat)}
                                 className={`px-6 py-2 rounded-full font-bold text-sm transition-all ${activeCategory === cat
-                                        ? 'bg-[#2C1810] text-white shadow-lg'
-                                        : 'bg-white text-slate-500 hover:bg-orange-50'
+                                    ? 'bg-[#2C1810] text-white shadow-lg'
+                                    : 'bg-white text-slate-500 hover:bg-orange-50'
                                     }`}
                             >
                                 {cat}

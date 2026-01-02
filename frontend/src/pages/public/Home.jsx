@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { ArrowRight, Coffee, Heart, Award, Sparkles, Loader2, ShoppingCart, CheckCircle2 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
@@ -36,7 +37,7 @@ const Home = () => {
     useEffect(() => {
         const fetchBestSellers = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/products');
+                const response = await fetch(`${API_URL}/api/products`);
                 const data = await response.json();
                 if (response.ok) {
                     const filtered = data.data.filter(p => p.isBestSeller).slice(0, 4);

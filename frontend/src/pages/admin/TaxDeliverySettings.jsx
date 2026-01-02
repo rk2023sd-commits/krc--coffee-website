@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Save, RefreshCw, Truck } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -18,7 +19,7 @@ const TaxDeliverySettings = () => {
     const fetchSettings = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/settings/tax', {
+            const res = await fetch(`${API_URL}/api/settings/tax`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await res.json();
@@ -47,7 +48,7 @@ const TaxDeliverySettings = () => {
                 freeShippingThreshold: parseFloat(settings.freeShippingThreshold) || 0
             };
 
-            const res = await fetch('http://localhost:5000/api/settings/tax', {
+            const res = await fetch(`${API_URL}/api/settings/tax`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

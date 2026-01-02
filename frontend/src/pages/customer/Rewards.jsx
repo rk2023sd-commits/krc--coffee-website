@@ -19,7 +19,7 @@ const Rewards = () => {
                     Authorization: `Bearer ${token}`,
                 },
             };
-            const response = await fetch('http://localhost:5000/api/users/rewards', config);
+            const response = await fetch(`${API_URL}/api/users/rewards`, config);
             const data = await response.json();
             if (data.success) {
                 setRewardPoints(data.rewardPoints);

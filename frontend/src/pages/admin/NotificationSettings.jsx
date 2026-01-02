@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Save, RefreshCw, Bell } from 'lucide-react';
 
 const NotificationSettings = () => {
@@ -18,7 +19,7 @@ const NotificationSettings = () => {
     const fetchSettings = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/settings/notifications', {
+            const res = await fetch(`${API_URL}/api/settings/notifications`, {
                 headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
             });
             const data = await res.json();
@@ -35,7 +36,7 @@ const NotificationSettings = () => {
     const handleSave = async () => {
         setSaving(true);
         try {
-            const res = await fetch('http://localhost:5000/api/settings/notifications', {
+            const res = await fetch(`${API_URL}/api/settings/notifications`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

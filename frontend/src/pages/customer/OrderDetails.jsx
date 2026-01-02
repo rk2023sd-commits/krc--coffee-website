@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { useParams, Link } from 'react-router-dom';
 import {
     ChevronLeft, Package, User, MapPin, CreditCard,
@@ -15,7 +16,7 @@ const OrderDetails = () => {
         const fetchOrderDetails = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:5000/api/orders/${id}`, {
+                const response = await fetch(`${API_URL}/api/orders/${id}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 const data = await response.json();

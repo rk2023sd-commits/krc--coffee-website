@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Calendar, User, ArrowLeft, Clock, Share2, Facebook, Twitter, Linkedin } from 'lucide-react';
 
@@ -12,7 +13,7 @@ const BlogPost = () => {
         const fetchBlog = async () => {
             try {
                 // Try fetching by slug/id
-                const res = await fetch(`http://localhost:5000/api/blogs/${slug}`);
+                const res = await fetch(`${API_URL}/api/blogs/${slug}`);
                 const data = await res.json();
                 if (data.success) {
                     setBlog(data.data);

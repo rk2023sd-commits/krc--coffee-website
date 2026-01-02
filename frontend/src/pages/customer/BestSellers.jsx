@@ -35,7 +35,7 @@ const BestSellers = () => {
         const fetchProducts = async () => {
             try {
                 setLoading(true);
-                const response = await fetch('http://localhost:5000/api/products');
+                const response = await fetch(`${API_URL}/api/products`);
                 const data = await response.json();
 
                 if (response.ok) {

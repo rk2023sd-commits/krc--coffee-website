@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Users, Shield, RefreshCw, Search, CheckCircle } from 'lucide-react';
 
 const Roles = () => {
@@ -14,7 +15,7 @@ const Roles = () => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:5000/api/users', {
+            const res = await fetch(`${API_URL}/api/users`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -33,7 +34,7 @@ const Roles = () => {
     const handleRoleChange = async (userId, newRole) => {
         setUpdatingId(userId);
         try {
-            const res = await fetch(`http://localhost:5000/api/users/${userId}/role`, {
+            const res = await fetch(`${API_URL}/api/users/${userId}/role`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

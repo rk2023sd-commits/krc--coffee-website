@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import API_URL from '../../config';
 import { Loader2, Info, Users, Coffee, Globe, Heart, Award, Leaf } from 'lucide-react';
 
 const About = () => {
@@ -9,7 +10,7 @@ const About = () => {
     useEffect(() => {
         const fetchContent = async () => {
             try {
-                const res = await fetch('http://localhost:5000/api/cms/pages/cms');
+                const res = await fetch(`${API_URL}/api/cms/pages/cms`);
                 const data = await res.json();
                 if (data.success && data.data && data.data.aboutUs) {
                     setContent(data.data.aboutUs);

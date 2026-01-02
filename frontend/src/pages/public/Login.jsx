@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import API_URL from '../../config';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, ArrowRight, Coffee, Chrome, Facebook } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -45,7 +46,7 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost:5000/api/auth/login', {
+            const response = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

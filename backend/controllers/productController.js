@@ -37,8 +37,13 @@ exports.getProduct = async (req, res) => {
 exports.createProduct = async (req, res) => {
     try {
         if (req.file) {
-            const url = `${req.protocol}://${req.get('host')}`;
-            req.body.image = `${url}/uploads/${req.file.filename}`;
+            // Cloudinary returns full URL in path, local storage needs construction
+            if (req.file.path && (req.file.path.startsWith('http') || req.file.path.startsWith('https'))) {
+                req.body.image = req.file.path;
+            } else {
+                const url = `${req.protocol}://${req.get('host')}`;
+                req.body.image = `${url}/uploads/${req.file.filename}`;
+            }
         }
 
         const product = await Product.create(req.body);
@@ -62,8 +67,12 @@ exports.updateProduct = async (req, res) => {
         }
 
         if (req.file) {
-            const url = `${req.protocol}://${req.get('host')}`;
-            req.body.image = `${url}/uploads/${req.file.filename}`;
+            if (req.file.path && (req.file.path.startsWith('http') || req.file.path.startsWith('https'))) {
+                req.body.image = req.file.path;
+            } else {
+                const url = `${req.protocol}://${req.get('host')}`;
+                req.body.image = `${url}/uploads/${req.file.filename}`;
+            }
         }
 
         product = await Product.findByIdAndUpdate(req.params.id, req.body, {
