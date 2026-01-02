@@ -12,7 +12,8 @@ const {
     addPaymentMethod,
     deletePaymentMethod,
     getPaymentMethods,
-    updatePaymentMethod
+    updatePaymentMethod,
+    updateProfile
 } = require('../controllers/userController');
 
 const { protect } = require('../middleware/authMiddleware'); // Assuming you have an auth middleware
@@ -23,6 +24,7 @@ const router = express.Router();
 router.use(protect); // Protect all routes
 
 router.get('/profile', getMyProfile);
+router.put('/profile', updateProfile);
 router.get('/rewards', getRewards);
 router.put('/update-password', updatePassword);
 router.post('/address', addAddress);

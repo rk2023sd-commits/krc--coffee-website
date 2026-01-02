@@ -41,6 +41,7 @@ import Security from './pages/customer/Security';
 import Payments from './pages/customer/Payments';
 
 
+import Profile from './pages/customer/Profile';
 
 // Admin Pages
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -106,6 +107,7 @@ function App() {
           <Route index element={<CustomerHome />} />
           <Route path="home" element={<CustomerHome />} />
           <Route path="dashboard" element={<CustomerDashboard />} />
+          <Route path="profile" element={<Profile />} />
           <Route path="orders" element={<OrderHistory />} />
           <Route path="orders/:id" element={<CustomerOrderDetails />} />
 

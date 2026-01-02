@@ -71,7 +71,7 @@ c:\Projects\w1111\KRC! COFFEE WEBSITE 6
 
 ## 5. Database Models
 The application uses the following MongoDB collections:
-- **Users**: User profiles, roles (admin/customer).
+- **Users**: User profiles, roles (admin/customer).65436534
 - **Products**: Product details, price, stock, images.
 - **Orders**: Order details, payment status, shipping info.
 - **Categories**: Product categories.

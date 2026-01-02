@@ -113,6 +113,7 @@ const CustomerLayout = () => {
 
     const profileItems = [
         { icon: User, label: 'Dashboard', path: '/customer/dashboard' },
+        { icon: User, label: 'My Profile', path: '/customer/profile' },
         { icon: ClipboardList, label: 'My Orders', path: '/customer/orders' },
         { icon: MapPin, label: 'Saved Addresses', path: '/customer/addresses' },
         { icon: CreditCard, label: 'My Cards & Wallet', path: '/customer/payments' },

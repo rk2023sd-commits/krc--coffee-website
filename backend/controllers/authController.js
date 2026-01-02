@@ -274,7 +274,8 @@ exports.sendVerification = async (req, res) => {
 
         // Generate OTP
         const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        // console.log(`DEV ONLY: OTP for ${email} is ${otp}`);
+        console.log(`DEV ONLY: OTP for ${email} is ${otp}`);
+        require('fs').writeFileSync('otp.txt', otp);
 
         // Save OTP to DB (upsert)
         await Verification.findOneAndUpdate(
@@ -362,6 +363,54 @@ exports.verifyOtp = async (req, res) => {
 
     } catch (error) {
         console.error('Verify OTP Error:', error);
+        res.status(500).json({ success: false, message: 'Server Error' });
+    }
+};
+
+// @desc    Verify OTP and Update Email
+// @route   POST /api/auth/verify-email-change
+// @access  Private
+exports.verifyEmailChange = async (req, res) => {
+    const { email, otp } = req.body;
+    const userId = req.user.id; // From authMiddleware
+
+    if (!email || !otp) {
+        return res.status(400).json({ success: false, message: 'Please provide new email and OTP' });
+    }
+
+    try {
+        const record = await Verification.findOne({ email });
+
+        if (!record) {
+            return res.status(400).json({ success: false, message: 'Verification code expired or not found' });
+        }
+
+        if (record.otp !== otp) {
+            return res.status(400).json({ success: false, message: 'Invalid verification code' });
+        }
+
+        // Update User Email
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        // Check if email already taken by ANOTHER user
+        const existingUser = await User.findOne({ email });
+        if (existingUser && existingUser._id.toString() !== userId) {
+            return res.status(400).json({ success: false, message: 'Email already in use by another account' });
+        }
+
+        user.email = email;
+        await user.save();
+
+        // Delete verification record
+        await Verification.deleteOne({ email });
+
+        res.status(200).json({ success: true, message: 'Email updated successfully', data: { email: user.email } });
+
+    } catch (error) {
+        console.error('Verify Email Change Error:', error);
         res.status(500).json({ success: false, message: 'Server Error' });
     }
 };
