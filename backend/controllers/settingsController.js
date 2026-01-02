@@ -1,4 +1,5 @@
 const Settings = require('../models/Settings');
+const Log = require('../models/Log');
 
 // @desc    Get Settings by Type
 // @route   GET /api/settings/:type
@@ -47,13 +48,13 @@ exports.updateSettings = async (req, res) => {
 exports.getSystemLogs = async (req, res) => {
     try {
         // In a real app, this would query a Logs collection
-        const mockLogs = [
-            { id: 1, type: 'info', message: 'System backup completed successfully', timestamp: new Date(Date.now() - 1000 * 60 * 60).toISOString() },
-            { id: 2, type: 'warning', message: 'High memory usage detected', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString() },
-            { id: 3, type: 'error', message: 'Failed payment webhook delivery', timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString() },
-            { id: 4, type: 'info', message: 'Admin user login', timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString() },
-        ];
-        res.status(200).json({ success: true, data: mockLogs });
+        // Fetch real logs, sorted by newest first, limited to last 100
+        const logs = await Log.find({})
+            .sort({ createdAt: -1 })
+            .limit(100)
+            .populate('user', 'name email'); // Optional: see who triggered it
+
+        res.status(200).json({ success: true, data: logs });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Server Error' });

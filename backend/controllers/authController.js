@@ -4,6 +4,7 @@ const Notification = require('../models/Notification');
 const sendEmail = require('../utils/sendEmail');
 const crypto = require('crypto');
 const Verification = require('../models/Verification');
+const { logEvent } = require('../utils/logger'); // Import Logger
 
 // Generate JWT Token
 const generateToken = (id) => {
@@ -69,6 +70,9 @@ exports.register = async (req, res) => {
 
         const token = generateToken(user._id);
 
+        // Log success
+        await logEvent('info', `New user registered: ${user.name} (${user.role})`, { email: user.email }, user._id, req.ip);
+
         res.status(201).json({
             success: true,
             data: {
@@ -113,6 +117,9 @@ exports.login = async (req, res) => {
         }
 
         const token = generateToken(user._id);
+
+        // Log login
+        await logEvent('info', `User logged in: ${user.name}`, { role: user.role }, user._id, req.ip);
 
         res.status(200).json({
             success: true,

@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const { logEvent } = require('../utils/logger');
 
 // @desc    Get all products
 // @route   GET /api/products
@@ -47,6 +48,9 @@ exports.createProduct = async (req, res) => {
         }
 
         const product = await Product.create(req.body);
+
+        await logEvent('info', `Product Created: ${product.name}`, { productId: product._id }, req.user ? req.user._id : null, req.ip);
+
         res.status(201).json({
             success: true,
             data: product
@@ -95,6 +99,9 @@ exports.deleteProduct = async (req, res) => {
             return res.status(404).json({ message: 'Product not found' });
         }
         await product.deleteOne();
+
+        await logEvent('warning', `Product Deleted: ${product.name}`, { productId: product._id }, req.user ? req.user._id : null, req.ip);
+
         res.status(200).json({ success: true, message: 'Product deleted' });
     } catch (error) {
         res.status(500).json({ message: error.message });

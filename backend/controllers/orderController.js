@@ -5,6 +5,7 @@ const Offer = require('../models/Offer');
 const sendEmail = require('../utils/sendEmail');
 const Razorpay = require('razorpay');
 const Settings = require('../models/Settings');
+const { logEvent } = require('../utils/logger');
 
 // @desc    Create Razorpay Order
 // @route   POST /api/orders/razorpay
@@ -164,6 +165,9 @@ exports.addOrderItems = async (req, res) => {
                 }
             }
 
+            // Log Order
+            await logEvent('success', `New Order #${createdOrder._id.toString().slice(-6).toUpperCase()} placed`, { amount: createdOrder.totalPrice }, user || null, req.ip);
+
             res.status(201).json(createdOrder);
         }
     } catch (error) {
@@ -285,6 +289,9 @@ exports.updateOrderStatus = async (req, res) => {
             } catch (emailErr) {
                 console.error('Status update email failed:', emailErr.message);
             }
+
+            // Log Status Update
+            await logEvent('info', `Order #${order._id.toString().slice(-6).toUpperCase()} status updated to ${status}`, {}, req.user ? req.user._id : null, req.ip);
 
             res.json(updatedOrder);
         } else {

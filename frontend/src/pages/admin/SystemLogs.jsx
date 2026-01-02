@@ -74,7 +74,7 @@ const SystemLogs = () => {
                                         </td>
                                         <td className="p-6 text-slate-700 font-mono text-sm">{log.message}</td>
                                         <td className="p-6 text-slate-500 text-sm">
-                                            {format(new Date(log.timestamp), 'MMM dd, yyyy HH:mm:ss')}
+                                            {format(new Date(log.createdAt), 'MMM dd, yyyy HH:mm:ss')}
                                         </td>
                                     </tr>
                                 ))}
