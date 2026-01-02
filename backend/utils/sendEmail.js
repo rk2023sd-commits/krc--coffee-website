@@ -2,10 +2,16 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
     // 1) Create a transporter
-    // Using standard service configuration which handles ports automatically
-    // Added TLS rejection bypass for Render/Cloud environments
+    // Using standard service configuration with POOLING enabled
+    // This helps maintain connections and handles rate limiting better on free tiers
     const transporter = nodemailer.createTransport({
         service: 'gmail',
+        pool: true, // Use pooled connections
+        maxConnections: 1, // Limit to 1 connection to avoid getting blocked
+        rateDelta: 2000, // Limit message rate
+        rateLimit: 5, // 5 messages per 2 seconds
+        connectionTimeout: 10000, // Wait 10 seconds before timeout
+        greetingTimeout: 5000, // Wait 5 seconds for greeting
         auth: {
             user: process.env.EMAIL_USERNAME,
             pass: process.env.EMAIL_PASSWORD
