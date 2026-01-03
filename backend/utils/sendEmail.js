@@ -2,18 +2,21 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
     // 1) Create a transporter
-    // Using Brevo SMTP which is much more reliable on Render/Cloud hosting
-    // than Gmail's restrictive free SMTP.
+    // 1) Create a transporter
+    // Explicit Brevo Config with extended timeouts
     const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST || 'smtp-relay.brevo.com',
+        host: 'smtp-relay.brevo.com',
         port: 587,
-        secure: false, // true for 465, false for other ports
+        secure: false, // keep false for 587
+        connectionTimeout: 60000, // 60 seconds
+        greetingTimeout: 30000, // 30 seconds
         auth: {
-            user: process.env.EMAIL_USERNAME,
-            pass: process.env.EMAIL_PASSWORD
+            user: process.env.EMAIL_USERNAME, // Ensure this matches Brevo login
+            pass: process.env.EMAIL_PASSWORD // Ensure this is the long SMTP Key
         },
         tls: {
-            rejectUnauthorized: false // Helps avoid SSL issues heavily on free tiers
+            rejectUnauthorized: false,
+            ciphers: 'SSLv3' // Try legacy cipher support just in case
         }
     });
 
