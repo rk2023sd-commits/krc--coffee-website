@@ -3,20 +3,22 @@ const nodemailer = require('nodemailer');
 const sendEmail = async (options) => {
     // 1) Create a transporter
     // 1) Create a transporter
-    // Explicit Brevo Config with extended timeouts
+    // Using Brevo on Alternate Port 2525 (Bypasses Render's Port 587 block)
+    // Reduced timeout to 10s so failsafe triggers quickly if blocked
     const transporter = nodemailer.createTransport({
         host: 'smtp-relay.brevo.com',
-        port: 587,
-        secure: false, // keep false for 587
-        connectionTimeout: 60000, // 60 seconds
-        greetingTimeout: 30000, // 30 seconds
+        port: 2525,
+        secure: false, // true for 465, false for other ports
+        connectionTimeout: 10000, // 10 seconds (Fail fast!)
+        greetingTimeout: 5000,
+        logger: true, // Log SMTP info for debugging
+        debug: true,  // Include debug info
         auth: {
-            user: process.env.EMAIL_USERNAME, // Ensure this matches Brevo login
-            pass: process.env.EMAIL_PASSWORD // Ensure this is the long SMTP Key
+            user: process.env.EMAIL_USERNAME,
+            pass: process.env.EMAIL_PASSWORD
         },
         tls: {
-            rejectUnauthorized: false,
-            ciphers: 'SSLv3' // Try legacy cipher support just in case
+            rejectUnauthorized: false
         }
     });
 
