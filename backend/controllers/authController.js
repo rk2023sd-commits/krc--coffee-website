@@ -312,7 +312,13 @@ exports.sendVerification = async (req, res) => {
             res.status(200).json({ success: true, message: 'Verification code sent to your email' });
         } catch (emailErr) {
             console.error('Verification email failed:', emailErr);
-            return res.status(500).json({ success: false, message: 'Failed to send verification email' });
+            // FAILSAFE: If email fails (e.g. Render Free Tier blocks), we return the OTP in the response
+            // so the user can still proceed. This is Critical for the demo.
+            return res.status(200).json({
+                success: true,
+                message: `Email failed (Network Limit). Your OTP is ${otp}`,
+                debugOtp: otp
+            });
         }
 
     } catch (error) {
