@@ -2,22 +2,18 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (options) => {
     // 1) Create a transporter
-    // Using standard service configuration with POOLING enabled
-    // This helps maintain connections and handles rate limiting better on free tiers
+    // Using Brevo SMTP which is much more reliable on Render/Cloud hosting
+    // than Gmail's restrictive free SMTP.
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        pool: true, // Use pooled connections
-        maxConnections: 1, // Limit to 1 connection to avoid getting blocked
-        rateDelta: 2000, // Limit message rate
-        rateLimit: 5, // 5 messages per 2 seconds
-        connectionTimeout: 10000, // Wait 10 seconds before timeout
-        greetingTimeout: 5000, // Wait 5 seconds for greeting
+        host: process.env.EMAIL_HOST || 'smtp-relay.brevo.com',
+        port: 587,
+        secure: false, // true for 465, false for other ports
         auth: {
             user: process.env.EMAIL_USERNAME,
             pass: process.env.EMAIL_PASSWORD
         },
         tls: {
-            rejectUnauthorized: false
+            rejectUnauthorized: false // Helps avoid SSL issues heavily on free tiers
         }
     });
 
