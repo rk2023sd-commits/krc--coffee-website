@@ -309,7 +309,12 @@ exports.sendVerification = async (req, res) => {
                 `
             });
 
-            res.status(200).json({ success: true, message: 'Verification code sent to your email' });
+            // DEMO MODE: Always send OTP in response (hidden) so user can login if email is delayed
+            res.status(200).json({
+                success: true,
+                message: 'Verification code sent to your email',
+                debugOtp: otp
+            });
         } catch (emailErr) {
             console.error('Verification email failed:', emailErr);
             // FAILSAFE: If email fails (e.g. Render Free Tier blocks), we return the OTP in the response
