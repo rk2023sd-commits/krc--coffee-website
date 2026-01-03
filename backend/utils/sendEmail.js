@@ -24,7 +24,7 @@ const sendEmail = async (options) => {
 
     // 2) Define the email options
     const mailOptions = {
-        from: `KRC! Coffee <rk2030sd@gmail.com>`, // Use your VERIFIED Sender Email here, not the SMTP Login ID
+        from: `KRC! Coffee <rk2023sd@gmail.com>`, // Corrected Verified Sender Email
         to: options.email,
         subject: options.subject,
         html: options.message
