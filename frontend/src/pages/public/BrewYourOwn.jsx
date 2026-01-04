@@ -178,17 +178,18 @@ const BrewYourOwn = () => {
                                     style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 15% 100%)' }} // Tapered Effect
                                 >
 
-                                    {/* KRC! Logo Badge */}
-                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-24 h-24 bg-[#00704A] rounded-full flex items-center justify-center shadow-lg border-2 border-white/80">
-                                        <div className="w-20 h-20 border border-white/50 rounded-full flex items-center justify-center">
-                                            <div className="text-center">
-                                                <span className="block text-white font-black text-xl tracking-tighter leading-none">KRC!</span>
-                                                <span className="block text-white text-[6px] uppercase tracking-widest mt-0.5">Coffee</span>
-                                                <div className="flex gap-0.5 justify-center mt-1">
-                                                    <div className="w-1 h-1 bg-white rounded-full"></div>
-                                                    <div className="w-1 h-1 bg-white rounded-full"></div>
-                                                    <div className="w-1 h-1 bg-white rounded-full"></div>
+                                    {/* KRC! Logo Badge - Themed */}
+                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-24 h-24 bg-[#4A2C2A] rounded-full flex items-center justify-center shadow-xl border-4 border-white">
+                                        <div className="w-20 h-20 border border-white/30 rounded-full flex items-center justify-center relative overflow-hidden">
+                                            {/* Decorative Circles */}
+                                            <div className="absolute inset-0 border-[3px] border-[#C97E45]/50 rounded-full scale-90"></div>
+
+                                            <div className="text-center z-10 relative">
+                                                <div className="flex justify-center mb-1">
+                                                    <Crown size={14} className="text-[#C97E45] fill-current" />
                                                 </div>
+                                                <span className="block text-white font-[Outfit] font-black text-2xl tracking-tighter leading-none drop-shadow-md">KRC!</span>
+                                                <span className="block text-[#C97E45] text-[7px] font-bold uppercase tracking-[0.2em] mt-0.5">Premium</span>
                                             </div>
                                         </div>
                                     </div>
