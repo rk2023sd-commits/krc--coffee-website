@@ -10,30 +10,16 @@ import {
     Star,
     CupSoda,
     LayoutDashboard,
-    Coffee,
-    Package,
-    Clock,
-    ChevronRight,
-    Truck
+    Coffee
 } from 'lucide-react';
-import API_URL from '../../config';
 
 const CustomerHome = () => {
     const [user, setUser] = useState(null);
     const [rewardPoints, setRewardPoints] = useState(0);
-    const [activeOrder, setActiveOrder] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [greeting, setGreeting] = useState('Hello');
 
     useEffect(() => {
-        const hour = new Date().getHours();
-        if (hour < 12) setGreeting('Good Morning');
-        else if (hour < 18) setGreeting('Good Afternoon');
-        else setGreeting('Good Evening');
-    }, []);
-
-    useEffect(() => {
-        const fetchProfileAndOrders = async () => {
+        const fetchProfile = async () => {
             try {
                 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
                 const token = localStorage.getItem('token') || (userInfo && userInfo.token);
@@ -42,37 +28,25 @@ const CustomerHome = () => {
                     return;
                 }
 
-                const headers = { Authorization: `Bearer ${token}` };
+                const response = await fetch(`${API_URL}/api/users/profile`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
 
-                // Fetch Profile
-                const profileRes = await fetch(`${API_URL}/api/users/profile`, { headers });
-                const profileData = await profileRes.json();
-
-                if (profileData.success) {
-                    setUser(profileData.data);
-                    setRewardPoints(profileData.data.rewardPoints || 0);
+                if (data.success) {
+                    setUser(data.data);
+                    setRewardPoints(data.data.rewardPoints || 0);
                 }
-
-                // Fetch Active Orders
-                const ordersRes = await fetch(`${API_URL}/api/orders/myorders`, { headers });
-                const ordersData = await ordersRes.json();
-
-                if (ordersData.success) {
-                    // Find first non-delivered/non-cancelled order
-                    const active = ordersData.data
-                        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                        .find(o => o.status !== 'Delivered' && o.status !== 'Cancelled');
-                    setActiveOrder(active);
-                }
-
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching profile:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchProfileAndOrders();
+        fetchProfile();
     }, []);
 
     const features = [
@@ -100,7 +74,7 @@ const CustomerHome = () => {
                 <div className="relative z-10 max-w-2xl">
                     <span className="inline-block px-4 py-1 rounded-full bg-white/10 text-orange-200 text-xs font-bold uppercase tracking-widest mb-6">Premium Member</span>
                     <h1 className="text-5xl font-bold font-[Outfit] leading-tight mb-4 text-white drop-shadow-md">
-                        {greeting}, {user?.name?.split(' ')[0] || 'Coffee Lover'}!
+                        Hello, {user?.name?.split(' ')[0] || 'Coffee Lover'}!
                     </h1>
                     <p className="text-xl text-orange-100 mb-8 leading-relaxed font-medium drop-shadow-sm">
                         Ready for your daily dose of perfection? We've roasted a fresh batch of Arabica just for you.
@@ -125,35 +99,6 @@ const CustomerHome = () => {
                 </div>
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#C97E45] rounded-full blur-[120px] opacity-20"></div>
             </div>
-
-            {/* Active Order Card */}
-            {activeOrder && (
-                <div className="bg-white border border-orange-100 rounded-[2rem] p-6 shadow-xl shadow-orange-950/5 relative overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
-                    <div className="absolute top-0 right-0 p-4 opacity-10">
-                        <Coffee size={120} className="text-[#C97E45]" />
-                    </div>
-                    <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="flex items-center gap-6">
-                            <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-[#C97E45] animate-pulse">
-                                <Truck size={32} />
-                            </div>
-                            <div>
-                                <span className="text-xs font-bold text-orange-500 uppercase tracking-widest">In Progress</span>
-                                <h3 className="text-xl font-bold text-[#4A2C2A]">Order #{activeOrder._id.slice(-6).toUpperCase()}</h3>
-                                <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
-                                    <Clock size={14} />
-                                    <span>Status: <span className="text-[#C97E45] font-bold">{activeOrder.status}</span></span>
-                                    <span>•</span>
-                                    <span>{activeOrder.orderItems.length} items</span>
-                                </div>
-                            </div>
-                        </div>
-                        <Link to={`/customer/orders/${activeOrder._id}`} className="bg-[#4A2C2A] text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#3a2220] transition-colors">
-                            Track Order <ChevronRight size={16} />
-                        </Link>
-                    </div>
-                </div>
-            )}
 
             {/* Quick Access Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

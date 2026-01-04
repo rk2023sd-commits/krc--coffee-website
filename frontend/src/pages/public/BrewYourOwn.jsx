@@ -110,13 +110,7 @@ const BrewYourOwn = () => {
             });
 
             toast.success("Your master brew has been added to cart!");
-
-            // Intelligent Redirect: Keep user in their current context
-            if (location.pathname.includes('/customer')) {
-                navigate('/customer/cart');
-            } else {
-                navigate('/cart');
-            }
+            navigate('/cart');
         } catch (error) {
             console.error(error);
             toast.error("Something went wrong");
@@ -140,116 +134,48 @@ const BrewYourOwn = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     {/* LEFT: Visualizer */}
-                    <div className="relative h-[500px] bg-[#E8E4D9] rounded-[3rem] shadow-inner border border-white/50 p-8 flex items-center justify-center overflow-hidden">
+                    <div className="relative h-[500px] bg-white rounded-[3rem] shadow-xl border border-slate-100 p-8 flex items-center justify-center overflow-hidden">
+                        <div className="relative z-10 w-64 h-64 md:w-80 md:h-80 transition-all duration-500">
+                            {/* Dynamic Coffee Cup Visualization */}
+                            <div className="w-full h-full relative flex items-center justify-center">
+                                {/* Cup Shadow */}
+                                <div className="absolute bottom-0 w-2/3 h-4 bg-black/20 blur-xl rounded-full"></div>
 
-                        {/* Custom CSS for specific animations */}
-                        <style>{`
-                            @keyframes float-steam {
-                                0% { transform: translateY(0) scale(1); opacity: 0; }
-                                50% { opacity: 0.5; }
-                                100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
-                            }
-                            .animate-steam { animation: float-steam 3s infinite ease-out; }
-                            .delay-75 { animation-delay: 0.75s; }
-                            .delay-150 { animation-delay: 1.5s; }
-                            .glass-reflection {
-                                background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0.1) 50%, transparent 54%);
-                            }
-                        `}</style>
-
-                        <div className="relative z-10 transition-all duration-500 flex flex-col items-center justify-end h-80">
-
-                            {/* Steam Animation - Only show if base selected */}
-                            {config.base && (
-                                <div className="absolute -top-12 flex gap-4 opacity-60">
-                                    <div className="w-2 h-16 bg-white blur-md rounded-full animate-steam"></div>
-                                    <div className="w-3 h-20 bg-white blur-md rounded-full animate-steam delay-75"></div>
-                                    <div className="w-2 h-14 bg-white blur-md rounded-full animate-steam delay-150"></div>
-                                </div>
-                            )}
-
-                            {/* Cup Container - Starbucks Style Cold Cup */}
-                            <div className={`relative transition-all duration-500 ease-in-out
-                                ${config.size === 'Small' ? 'w-40 h-56' : config.size === 'Medium' ? 'w-48 h-64' : 'w-56 h-72'}
-                            `}>
-                                {/* Lid */}
-                                <div className="absolute -top-6 left-0 right-0 h-10 bg-white/40 backdrop-blur-md rounded-t-[50%] border-t border-white/60 z-20 shadow-sm flex justify-center items-center">
-                                    {/* Straw Hole */}
-                                    <div className="w-4 h-2 bg-black/10 rounded-full mt-2"></div>
-                                </div>
-                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-8 h-32 bg-green-800/20 rotate-12 z-10 rounded-full blur-[1px]"></div> {/* Straw illusion */}
-
-                                {/* Cup Body - Tapered Glass/Plastic */}
-                                <div className="w-full h-full bg-white/10 backdrop-blur-[2px] border-2 border-white/30 rounded-b-[2rem] shadow-xl overflow-hidden relative glass-reflection flex flex-col justify-end"
-                                    style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 15% 100%)' }} // Tapered Effect
+                                {/* Cup Body - Changes size based on selection */}
+                                <div
+                                    className={`relative bg-white border-2 border-slate-100 rounded-b-[40%] shadow-inner overflow-hidden transition-all duration-500
+                                    ${config.size === 'Small' ? 'w-40 h-32' : config.size === 'Medium' ? 'w-56 h-48' : 'w-64 h-56'}
+                                    `}
                                 >
-
-                                    {/* KRC! Logo Badge - Themed */}
-                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-24 h-24 bg-[#4A2C2A] rounded-full flex items-center justify-center shadow-xl border-4 border-white">
-                                        <div className="w-20 h-20 border border-white/30 rounded-full flex items-center justify-center relative overflow-hidden">
-                                            {/* Decorative Circles */}
-                                            <div className="absolute inset-0 border-[3px] border-[#C97E45]/50 rounded-full scale-90"></div>
-
-                                            <div className="text-center z-10 relative">
-                                                <div className="flex justify-center mb-1">
-                                                    <Crown size={14} className="text-[#C97E45] fill-current" />
-                                                </div>
-                                                <span className="block text-white font-[Outfit] font-black text-2xl tracking-tighter leading-none drop-shadow-md">KRC!</span>
-                                                <span className="block text-[#C97E45] text-[7px] font-bold uppercase tracking-[0.2em] mt-0.5">Premium</span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Liquid Layers Container */}
-                                    <div className="absolute bottom-0 left-0 right-0 top-0 z-0">
-
-                                        {/* Base Coffee Layer */}
-                                        <div
-                                            className="absolute bottom-0 w-full transition-all duration-1000 ease-in-out"
-                                            style={{
-                                                height: config.base ? '85%' : '0%',
-                                                backgroundColor: config.base ? config.base.color : '#F0E6D2',
-                                                opacity: 0.9,
-                                                maskImage: 'linear-gradient(to top, black 80%, transparent 100%)'
-                                            }}
-                                        >
-                                            {/* Ice Cubes (Standard in Cold Cups) */}
-                                            {config.base && (
-                                                <>
-                                                    <div className="absolute top-10 left-4 w-8 h-8 bg-white/20 rotate-12 rounded-lg border border-white/10"></div>
-                                                    <div className="absolute bottom-20 right-8 w-10 h-10 bg-white/20 -rotate-12 rounded-lg border border-white/10"></div>
-                                                    <div className="absolute top-1/2 left-1/2 w-6 h-6 bg-white/20 rotate-45 rounded-lg border border-white/10"></div>
-                                                </>
-                                            )}
-
-                                            {/* Milk Mixing Effect */}
-                                            {config.milk !== 'Full Cream' && (
-                                                <div className="absolute bottom-0 w-full h-2/3 bg-gradient-to-t from-white/40 to-transparent blur-2xl"></div>
-                                            )}
-                                        </div>
-
-                                        {/* Syrup Glaze */}
-                                        {config.syrup !== 'No Sugar' && (
-                                            <div className="absolute inset-0 opacity-40 mix-blend-overlay"
-                                                style={{ backgroundImage: 'linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.4) 45%, transparent 50%)', backgroundSize: '200% 200%' }}
-                                            ></div>
+                                    {/* Coffee Liquid - Color changes based on base */}
+                                    <div
+                                        className="absolute bottom-0 w-full transition-all duration-700 ease-in-out"
+                                        style={{
+                                            height: '85%',
+                                            backgroundColor: config.base ? config.base.color : '#F0E6D2'
+                                        }}
+                                    >
+                                        {/* Milk Layer logic could go here */}
+                                        {config.milk !== 'Full Cream' && (
+                                            <div className="absolute top-0 w-full h-4 bg-white/20 blur-md"></div>
                                         )}
                                     </div>
 
-                                    {/* Reflections */}
-                                    <div className="absolute top-0 right-8 w-4 h-full bg-gradient-to-l from-white/20 to-transparent skew-x-6"></div>
-                                    <div className="absolute top-0 left-4 w-2 h-full bg-gradient-to-r from-white/20 to-transparent skew-x-[-6deg]"></div>
+                                    {/* Cup Reflection */}
+                                    <div className="absolute top-0 right-4 w-4 h-full bg-white/30 skew-x-12 blur-sm"></div>
                                 </div>
-                            </div>
 
-                            {/* Coaster/Shadow */}
-                            <div className="absolute -bottom-8 w-40 h-8 bg-black/20 blur-xl rounded-[100%]"></div>
+                                {/* Cup Handle */}
+                                <div className={`absolute right-0 top-1/2 -translate-y-1/2 -mr-8 w-12 h-16 border-4 border-white rounded-r-2xl shadow-sm
+                                     ${config.size === 'Small' ? 'hidden' : 'block'}
+                                `}></div>
+                            </div>
                         </div>
 
                         {/* Summary Pill */}
-                        <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-md px-6 py-4 rounded-3xl shadow-lg border border-white/50 min-w-[160px] text-center transform hover:scale-105 transition-all">
-                            <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Total Brew Price</p>
-                            <p className="text-4xl font-black text-[#2C1810]">₹{calculatePrice()}</p>
+                        <div className="absolute top-8 right-8 bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-slate-100 max-w-[200px]">
+                            <p className="text-xs text-slate-400 uppercase font-bold tracking-widest mb-1">Total Price</p>
+                            <p className="text-3xl font-bold text-[#2C1810]">₹{calculatePrice()}</p>
                         </div>
                     </div>
 
