@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import API_URL from '../config';
 import { useCart } from '../context/CartContext';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -100,7 +101,6 @@ const CustomerLayout = () => {
     const menuItems = [
         { icon: Home, label: 'Home Feed', path: '/customer' },
         { icon: Coffee, label: 'Brew Your Own', path: '/customer/brew-your-own', isNew: true },
-
         { icon: ShoppingBag, label: 'Shop Now', path: '/customer/shop' },
         { icon: Sparkles, label: 'New Arrivals', path: '/customer/new-arrivals' },
         { icon: TrendingUp, label: 'Best Sellers', path: '/customer/best-sellers' },
@@ -110,6 +110,48 @@ const CustomerLayout = () => {
         { icon: ClipboardList, label: 'My Orders', path: '/customer/orders', count: counts.orders },
         { icon: Bell, label: 'Notifications', path: '/customer/notifications', count: unreadCount },
     ];
+
+    // Romantic AI Notification Logic
+    React.useEffect(() => {
+        const messages = [
+            "You + Coffee = The Perfect Blend ☕❤️",
+            "Thinking of you... and your next delicious Latte.",
+            "You look brew-tiful today! ✨",
+            "Just a reminder: You are loved (and so is coffee).",
+            "Sending you a warm cup of happiness! 💖",
+            "Life happens, coffee helps... but you make it worth it.",
+            "You're the cream to my coffee 🥛",
+            "Cappuccino kisses coming your way! 💋☕",
+            "Stay grounded, stay amazing.",
+            "Don't forget to take a sip of joy today!"
+        ];
+
+        const triggerRandomMessage = () => {
+            const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+
+            toast(randomMsg, {
+                icon: '💝',
+                style: {
+                    borderRadius: '20px',
+                    background: '#FFF0F5', // Lavender Blush
+                    color: '#D81B60', // Deep Pink
+                    border: '1px solid #FFC1E3',
+                    padding: '16px',
+                    fontWeight: 'bold',
+                },
+                duration: 5000,
+            });
+
+            // Schedule next message (random time between 45s and 3 minutes)
+            const nextTime = Math.random() * (180000 - 45000) + 45000;
+            timeoutId = setTimeout(triggerRandomMessage, nextTime);
+        };
+
+        // Initial delay before first message
+        let timeoutId = setTimeout(triggerRandomMessage, 10000);
+
+        return () => clearTimeout(timeoutId);
+    }, []);
 
 
     const profileItems = [
