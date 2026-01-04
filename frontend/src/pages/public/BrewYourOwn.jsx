@@ -134,48 +134,104 @@ const BrewYourOwn = () => {
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     {/* LEFT: Visualizer */}
-                    <div className="relative h-[500px] bg-white rounded-[3rem] shadow-xl border border-slate-100 p-8 flex items-center justify-center overflow-hidden">
-                        <div className="relative z-10 w-64 h-64 md:w-80 md:h-80 transition-all duration-500">
-                            {/* Dynamic Coffee Cup Visualization */}
-                            <div className="w-full h-full relative flex items-center justify-center">
-                                {/* Cup Shadow */}
-                                <div className="absolute bottom-0 w-2/3 h-4 bg-black/20 blur-xl rounded-full"></div>
+                    <div className="relative h-[500px] bg-[#E8E4D9] rounded-[3rem] shadow-inner border border-white/50 p-8 flex items-center justify-center overflow-hidden">
 
-                                {/* Cup Body - Changes size based on selection */}
-                                <div
-                                    className={`relative bg-white border-2 border-slate-100 rounded-b-[40%] shadow-inner overflow-hidden transition-all duration-500
-                                    ${config.size === 'Small' ? 'w-40 h-32' : config.size === 'Medium' ? 'w-56 h-48' : 'w-64 h-56'}
-                                    `}
-                                >
-                                    {/* Coffee Liquid - Color changes based on base */}
-                                    <div
-                                        className="absolute bottom-0 w-full transition-all duration-700 ease-in-out"
-                                        style={{
-                                            height: '85%',
-                                            backgroundColor: config.base ? config.base.color : '#F0E6D2'
-                                        }}
-                                    >
-                                        {/* Milk Layer logic could go here */}
-                                        {config.milk !== 'Full Cream' && (
-                                            <div className="absolute top-0 w-full h-4 bg-white/20 blur-md"></div>
+                        {/* Custom CSS for specific animations */}
+                        <style>{`
+                            @keyframes float-steam {
+                                0% { transform: translateY(0) scale(1); opacity: 0; }
+                                50% { opacity: 0.5; }
+                                100% { transform: translateY(-40px) scale(1.5); opacity: 0; }
+                            }
+                            .animate-steam { animation: float-steam 3s infinite ease-out; }
+                            .delay-75 { animation-delay: 0.75s; }
+                            .delay-150 { animation-delay: 1.5s; }
+                            .glass-reflection {
+                                background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.4) 45%, rgba(255,255,255,0.1) 50%, transparent 54%);
+                            }
+                        `}</style>
+
+                        <div className="relative z-10 transition-all duration-500 flex flex-col items-center justify-end h-80">
+
+                            {/* Steam Animation - Only show if base selected */}
+                            {config.base && (
+                                <div className="absolute -top-12 flex gap-4 opacity-60">
+                                    <div className="w-2 h-16 bg-white blur-md rounded-full animate-steam"></div>
+                                    <div className="w-3 h-20 bg-white blur-md rounded-full animate-steam delay-75"></div>
+                                    <div className="w-2 h-14 bg-white blur-md rounded-full animate-steam delay-150"></div>
+                                </div>
+                            )}
+
+                            {/* Cup Container */}
+                            <div className={`relative transition-all duration-500 ease-in-out
+                                ${config.size === 'Small' ? 'w-40 h-48' : config.size === 'Medium' ? 'w-48 h-60' : 'w-56 h-72'}
+                            `}>
+                                {/* Glass Body */}
+                                <div className="w-full h-full bg-white/20 backdrop-blur-sm border-2 border-white/40 rounded-b-[2rem] rounded-t-lg shadow-xl overflow-hidden relative glass-reflection">
+
+                                    {/* Liquid Layers Container */}
+                                    <div className="absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-end p-1">
+
+                                        {/* Base Coffee Layer */}
+                                        <div
+                                            className="w-full rounded-b-[1.8rem] transition-all duration-1000 ease-in-out relative overflow-hidden"
+                                            style={{
+                                                height: config.base ? '80%' : '0%',
+                                                backgroundColor: config.base ? config.base.color : '#F0E6D2',
+                                                boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.2)'
+                                            }}
+                                        >
+                                            {/* Bubbles in Coffee */}
+                                            <div className="absolute w-full h-full opacity-30 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+
+                                            {/* Milk Mixing Effect */}
+                                            {config.milk !== 'Full Cream' && (
+                                                <div className="absolute bottom-0 w-full h-1/2 bg-gradient-to-t from-white/20 to-transparent blur-xl"></div>
+                                            )}
+                                        </div>
+
+                                        {/* Foam/Cream Layer */}
+                                        {config.base && (
+                                            <div
+                                                className="w-full bg-[#FFFDD0] transition-all duration-700 ease-out"
+                                                style={{
+                                                    height: config.size === 'Large' || config.base.id === 'cappuccino' ? '20%' : '5%',
+                                                    opacity: 0.9,
+                                                    boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
+                                                }}
+                                            >
+                                                {/* Syrup Drizzle if selected */}
+                                                {config.syrup !== 'No Sugar' && (
+                                                    <div className="w-full h-full opacity-60 mix-blend-multiply"
+                                                        style={{
+                                                            backgroundImage: 'radial-gradient(circle, transparent 20%, #8B4513 22%, transparent 24%)',
+                                                            backgroundSize: '20px 20px'
+                                                        }}
+                                                    ></div>
+                                                )}
+                                            </div>
                                         )}
                                     </div>
 
-                                    {/* Cup Reflection */}
-                                    <div className="absolute top-0 right-4 w-4 h-full bg-white/30 skew-x-12 blur-sm"></div>
+                                    {/* Glass Highlights */}
+                                    <div className="absolute top-0 right-3 w-3 h-full bg-gradient-to-l from-white/30 to-transparent blur-[2px]"></div>
+                                    <div className="absolute top-0 left-3 w-1 h-full bg-gradient-to-r from-white/40 to-transparent blur-[1px]"></div>
                                 </div>
 
-                                {/* Cup Handle */}
-                                <div className={`absolute right-0 top-1/2 -translate-y-1/2 -mr-8 w-12 h-16 border-4 border-white rounded-r-2xl shadow-sm
-                                     ${config.size === 'Small' ? 'hidden' : 'block'}
+                                {/* Handle */}
+                                <div className={`absolute top-1/2 -right-10 -translate-y-1/2 w-12 h-24 border-8 border-white/30 rounded-r-3xl shadow-sm transition-opacity duration-300
+                                    ${config.size === 'Small' ? 'opacity-0' : 'opacity-100'}
                                 `}></div>
                             </div>
+
+                            {/* Coaster/Shadow */}
+                            <div className="absolute -bottom-8 w-40 h-8 bg-black/20 blur-xl rounded-[100%]"></div>
                         </div>
 
                         {/* Summary Pill */}
-                        <div className="absolute top-8 right-8 bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-slate-100 max-w-[200px]">
-                            <p className="text-xs text-slate-400 uppercase font-bold tracking-widest mb-1">Total Price</p>
-                            <p className="text-3xl font-bold text-[#2C1810]">₹{calculatePrice()}</p>
+                        <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-md px-6 py-4 rounded-3xl shadow-lg border border-white/50 min-w-[160px] text-center transform hover:scale-105 transition-all">
+                            <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Total Brew Price</p>
+                            <p className="text-4xl font-black text-[#2C1810]">₹{calculatePrice()}</p>
                         </div>
                     </div>
 
