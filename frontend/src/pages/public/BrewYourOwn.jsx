@@ -110,7 +110,13 @@ const BrewYourOwn = () => {
             });
 
             toast.success("Your master brew has been added to cart!");
-            navigate('/cart');
+
+            // Intelligent Redirect: Keep user in their current context
+            if (location.pathname.includes('/customer')) {
+                navigate('/customer/cart');
+            } else {
+                navigate('/cart');
+            }
         } catch (error) {
             console.error(error);
             toast.error("Something went wrong");
