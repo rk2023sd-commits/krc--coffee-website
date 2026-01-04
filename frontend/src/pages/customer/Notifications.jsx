@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Bell, Trash2, CheckCircle2, ClipboardList, Ticket, User, Info, Loader2, ShoppingBag, AlertCircle } from 'lucide-react';
+import API_URL from '../../config';
 
 const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
