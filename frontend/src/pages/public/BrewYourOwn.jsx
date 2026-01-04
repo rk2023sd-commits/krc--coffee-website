@@ -162,66 +162,77 @@ const BrewYourOwn = () => {
                                 </div>
                             )}
 
-                            {/* Cup Container */}
+                            {/* Cup Container - Starbucks Style Cold Cup */}
                             <div className={`relative transition-all duration-500 ease-in-out
-                                ${config.size === 'Small' ? 'w-40 h-48' : config.size === 'Medium' ? 'w-48 h-60' : 'w-56 h-72'}
+                                ${config.size === 'Small' ? 'w-40 h-56' : config.size === 'Medium' ? 'w-48 h-64' : 'w-56 h-72'}
                             `}>
-                                {/* Glass Body */}
-                                <div className="w-full h-full bg-white/20 backdrop-blur-sm border-2 border-white/40 rounded-b-[2rem] rounded-t-lg shadow-xl overflow-hidden relative glass-reflection">
+                                {/* Lid */}
+                                <div className="absolute -top-6 left-0 right-0 h-10 bg-white/40 backdrop-blur-md rounded-t-[50%] border-t border-white/60 z-20 shadow-sm flex justify-center items-center">
+                                    {/* Straw Hole */}
+                                    <div className="w-4 h-2 bg-black/10 rounded-full mt-2"></div>
+                                </div>
+                                <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-8 h-32 bg-green-800/20 rotate-12 z-10 rounded-full blur-[1px]"></div> {/* Straw illusion */}
+
+                                {/* Cup Body - Tapered Glass/Plastic */}
+                                <div className="w-full h-full bg-white/10 backdrop-blur-[2px] border-2 border-white/30 rounded-b-[2rem] shadow-xl overflow-hidden relative glass-reflection flex flex-col justify-end"
+                                    style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 15% 100%)' }} // Tapered Effect
+                                >
+
+                                    {/* KRC! Logo Badge */}
+                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 w-24 h-24 bg-[#00704A] rounded-full flex items-center justify-center shadow-lg border-2 border-white/80">
+                                        <div className="w-20 h-20 border border-white/50 rounded-full flex items-center justify-center">
+                                            <div className="text-center">
+                                                <span className="block text-white font-black text-xl tracking-tighter leading-none">KRC!</span>
+                                                <span className="block text-white text-[6px] uppercase tracking-widest mt-0.5">Coffee</span>
+                                                <div className="flex gap-0.5 justify-center mt-1">
+                                                    <div className="w-1 h-1 bg-white rounded-full"></div>
+                                                    <div className="w-1 h-1 bg-white rounded-full"></div>
+                                                    <div className="w-1 h-1 bg-white rounded-full"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     {/* Liquid Layers Container */}
-                                    <div className="absolute bottom-0 left-0 right-0 top-0 flex flex-col justify-end p-1">
+                                    <div className="absolute bottom-0 left-0 right-0 top-0 z-0">
 
                                         {/* Base Coffee Layer */}
                                         <div
-                                            className="w-full rounded-b-[1.8rem] transition-all duration-1000 ease-in-out relative overflow-hidden"
+                                            className="absolute bottom-0 w-full transition-all duration-1000 ease-in-out"
                                             style={{
-                                                height: config.base ? '80%' : '0%',
+                                                height: config.base ? '85%' : '0%',
                                                 backgroundColor: config.base ? config.base.color : '#F0E6D2',
-                                                boxShadow: 'inset 0 -10px 20px rgba(0,0,0,0.2)'
+                                                opacity: 0.9,
+                                                maskImage: 'linear-gradient(to top, black 80%, transparent 100%)'
                                             }}
                                         >
-                                            {/* Bubbles in Coffee */}
-                                            <div className="absolute w-full h-full opacity-30 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')]"></div>
+                                            {/* Ice Cubes (Standard in Cold Cups) */}
+                                            {config.base && (
+                                                <>
+                                                    <div className="absolute top-10 left-4 w-8 h-8 bg-white/20 rotate-12 rounded-lg border border-white/10"></div>
+                                                    <div className="absolute bottom-20 right-8 w-10 h-10 bg-white/20 -rotate-12 rounded-lg border border-white/10"></div>
+                                                    <div className="absolute top-1/2 left-1/2 w-6 h-6 bg-white/20 rotate-45 rounded-lg border border-white/10"></div>
+                                                </>
+                                            )}
 
                                             {/* Milk Mixing Effect */}
                                             {config.milk !== 'Full Cream' && (
-                                                <div className="absolute bottom-0 w-full h-1/2 bg-gradient-to-t from-white/20 to-transparent blur-xl"></div>
+                                                <div className="absolute bottom-0 w-full h-2/3 bg-gradient-to-t from-white/40 to-transparent blur-2xl"></div>
                                             )}
                                         </div>
 
-                                        {/* Foam/Cream Layer */}
-                                        {config.base && (
-                                            <div
-                                                className="w-full bg-[#FFFDD0] transition-all duration-700 ease-out"
-                                                style={{
-                                                    height: config.size === 'Large' || config.base.id === 'cappuccino' ? '20%' : '5%',
-                                                    opacity: 0.9,
-                                                    boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
-                                                }}
-                                            >
-                                                {/* Syrup Drizzle if selected */}
-                                                {config.syrup !== 'No Sugar' && (
-                                                    <div className="w-full h-full opacity-60 mix-blend-multiply"
-                                                        style={{
-                                                            backgroundImage: 'radial-gradient(circle, transparent 20%, #8B4513 22%, transparent 24%)',
-                                                            backgroundSize: '20px 20px'
-                                                        }}
-                                                    ></div>
-                                                )}
-                                            </div>
+                                        {/* Syrup Glaze */}
+                                        {config.syrup !== 'No Sugar' && (
+                                            <div className="absolute inset-0 opacity-40 mix-blend-overlay"
+                                                style={{ backgroundImage: 'linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.4) 45%, transparent 50%)', backgroundSize: '200% 200%' }}
+                                            ></div>
                                         )}
                                     </div>
 
-                                    {/* Glass Highlights */}
-                                    <div className="absolute top-0 right-3 w-3 h-full bg-gradient-to-l from-white/30 to-transparent blur-[2px]"></div>
-                                    <div className="absolute top-0 left-3 w-1 h-full bg-gradient-to-r from-white/40 to-transparent blur-[1px]"></div>
+                                    {/* Reflections */}
+                                    <div className="absolute top-0 right-8 w-4 h-full bg-gradient-to-l from-white/20 to-transparent skew-x-6"></div>
+                                    <div className="absolute top-0 left-4 w-2 h-full bg-gradient-to-r from-white/20 to-transparent skew-x-[-6deg]"></div>
                                 </div>
-
-                                {/* Handle */}
-                                <div className={`absolute top-1/2 -right-10 -translate-y-1/2 w-12 h-24 border-8 border-white/30 rounded-r-3xl shadow-sm transition-opacity duration-300
-                                    ${config.size === 'Small' ? 'opacity-0' : 'opacity-100'}
-                                `}></div>
                             </div>
 
                             {/* Coaster/Shadow */}
